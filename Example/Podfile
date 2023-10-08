@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '10.0'
+
+target 'AutoLayout-SnapKit_Example' do
+  pod 'AutoLayout-SnapKit', :path => '../'
+
+  target 'AutoLayout-SnapKit_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
