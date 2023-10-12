@@ -1,0 +1,6 @@
+framework module AutoLayout_SnapKit {
+  umbrella header "AutoLayout-SnapKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

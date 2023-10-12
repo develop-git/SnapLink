@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  AutoLayout-SnapKit
 //
-//  Created by FullStack-Jian on 10/08/2023.
-//  Copyright (c) 2023 FullStack-Jian. All rights reserved.
+//  Created by 承轩 on 10/08/2023.
+//  Copyright (c) 2023 承轩. All rights reserved.
 //
 
 import UIKit

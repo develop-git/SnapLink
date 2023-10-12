@@ -7,36 +7,28 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'AutoLayout-SnapKit'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of AutoLayout-SnapKit.'
+   s.name = 'AutoLayout-SnapKit'
+   s.version = '1.0.0'
+   s.license = 'MIT'
+   s.summary = '对 SnapKit 进行链式编程扩展，同时避免了视图添加约束冲突、视图未添加到父视图等造成崩溃的问题'
+   s.homepage = 'https://github.com/develop-git/AutoLayout-SnapKit'
+   s.authors = { 'jianli' => 'develop-work@outlook.com' }
+   s.source = { :git => 'https://github.com/develop-git/AutoLayout-SnapKit.git', :tag => s.version.to_s }
+   #s.documentation_url = ''
 
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
+   s.requires_arc = true
+   
+   s.ios.deployment_target = '10.0'
+   s.osx.deployment_target = '10.12'
+   s.tvos.deployment_target = '10.0'
 
-  s.description      = <<-DESC
-TODO: Add long description of the pod here.
-                       DESC
+   s.swift_versions = ['5']
 
-  s.homepage         = 'https://github.com/FullStack-Jian/AutoLayout-SnapKit'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'FullStack-Jian' => '89860307+develop-git@users.noreply.github.com' }
-  s.source           = { :git => 'https://github.com/FullStack-Jian/AutoLayout-SnapKit.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+   s.source_files = 'Source/**/*.swift'
+   
+   s.dependency 'SnapKit', '~> 5.6.0'
 
-  s.ios.deployment_target = '10.0'
-
-  s.source_files = 'AutoLayout-SnapKit/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'AutoLayout-SnapKit' => ['AutoLayout-SnapKit/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
-end
+   s.xcconfig = {
+       'LIBRARY_SEARCH_PATHS' => '$(SDKROOT)/usr/lib/swift',
+   }
+ end

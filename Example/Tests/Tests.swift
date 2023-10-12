@@ -1,5 +1,4 @@
 import XCTest
-import AutoLayout-SnapKit
 
 class Tests: XCTestCase {
     
