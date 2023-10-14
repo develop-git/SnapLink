@@ -51,7 +51,7 @@ it, simply add the following line to your Podfile:
 
 ```ruby
 
-pod 'AutoLayout-SnapKit', '~> 1.0.0'
+pod 'AutoLayout-SnapKit', '~> 1.1.0'
 
 ```
 
