@@ -8,27 +8,24 @@
 #if canImport(SnapKit)
 import SnapKit
 
-public class AppViewConstraintAnchor : Equatable {
+public class AppViewConstraintAnchor {
 
-    public var origin: ConstraintItem
-    public var view: AppView
-    internal var viewController: Controller?
+    internal var origin: ConstraintItem
+    internal var view: AppView
     
-    public required init(origin: ConstraintItem, view: AppView) {
+    internal required init(origin: ConstraintItem, view: AppView) {
         self.origin = origin
         self.view = view
-        self.viewController = view.viewController
-    }
-    
-    public static func == (lhs: AppViewConstraintAnchor, rhs: AppViewConstraintAnchor) -> Bool {
-        lhs.origin == rhs.origin && lhs.view == rhs.view
     }
 }
 
+/// leading、trailing、centerX
 public final class AppViewXaxisAnchor: AppViewConstraintAnchor {}
 
+/// top、bottom、centerY
 public final class AppViewYaxisAnchor: AppViewConstraintAnchor {}
 
+/// width、height
 public final class AppViewSizeAnchor: AppViewConstraintAnchor {}
 
 #endif

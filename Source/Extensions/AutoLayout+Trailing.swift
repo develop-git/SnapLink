@@ -26,9 +26,8 @@ public extension AutoLayoutViewDSL {
     }
     
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func trailing(_ offset: AutoLayoutCompoundExtraXaxisValue) -> Self {
-        guard let ret = verify(at: .trailing, from: offset.raw.item, extra: offset.raw.offset.invertVal, inSafe: offset == .bySuperSafe) else { return self }
+        guard let ret = verify(at: .trailing, from: offset.raw.item, extra: offset.raw.offset.invertVal, inSafe: false) else { return self }
         return offsetBy(ret.item, for: .trailing, extra: ret.extra)
     }
     
@@ -121,7 +120,6 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func trailingCenterY(_ trailing: AutoLayoutCompoundExtraXaxisValue,
                          _ centerY: AutoLayoutCompoundExtraYaxisValue? = nil) -> Self
     {
@@ -137,7 +135,7 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    func trailingCenterY(by trailing: AppView, offset: AutoLayoutExtraValue = .zero) -> Self {
+    func trailingCenterY(by trailing: AppView, offset: AutoLayoutExtraValue = .non) -> Self {
         return self.trailing(by: trailing, offset: offset)
             .centerY(by: trailing)
     }
@@ -166,7 +164,7 @@ public extension AutoLayoutViewDSL {
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
     func trailingTop(_ trailing: AutoLayoutExtraValue,
-                     _ top: AutoLayoutExtraValue = .global) -> Self
+                     _ top: AutoLayoutExtraValue) -> Self
     {
         return self.trailing(trailing)
             .top(top)
@@ -176,9 +174,8 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func trailingTop(_ trailing: AutoLayoutCompoundExtraXaxisValue,
-                     _ top: AutoLayoutCompoundExtraYaxisValue = .bySuperOffset(.global)) -> Self
+                     _ top: AutoLayoutCompoundExtraYaxisValue) -> Self
     {
         return self.trailing(trailing)
             .top(top)
@@ -204,7 +201,7 @@ public extension AutoLayoutViewDSL {
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
     func trailingBottom(_ trailing: AutoLayoutExtraValue,
-                        _ bottom: AutoLayoutExtraValue = .global) -> Self
+                        _ bottom: AutoLayoutExtraValue) -> Self
     {
         return self.trailing(trailing)
             .bottom(bottom)
@@ -214,9 +211,8 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func trailingBottom(_ trailing: AutoLayoutCompoundExtraXaxisValue,
-                        _ bottom: AutoLayoutCompoundExtraYaxisValue = .bySuperOffset(.global)) -> Self
+                        _ bottom: AutoLayoutCompoundExtraYaxisValue) -> Self
     {
         return self.trailing(trailing)
             .bottom(bottom)

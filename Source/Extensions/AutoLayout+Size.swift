@@ -47,7 +47,6 @@ public extension AutoLayoutViewDSL {
     /// 若需要 width\ height 动态变化，可设置为 .max\.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func size(width: AutoLayoutCompoundMultiplierValue,
               height: AutoLayoutCompoundMultiplierValue) -> Self
     {
@@ -56,7 +55,6 @@ public extension AutoLayoutViewDSL {
     }
     
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func size(_ size: AutoLayoutCompoundMultiplierValue = .bySuper) -> Self
     {
         return self.width(size)
@@ -68,8 +66,8 @@ public extension AutoLayoutViewDSL {
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
     func size(by view: AppView,
-              widthMult: AutoLayoutExtraValue = .one,
-              heightMult: AutoLayoutExtraValue = .one) -> Self
+              width widthMult: AutoLayoutExtraValue = .one,
+              height heightMult: AutoLayoutExtraValue = .one) -> Self
     {
         return self.width(by: view, mult: widthMult)
             .height(by: view, mult: heightMult)
@@ -98,10 +96,9 @@ public extension AutoLayoutViewDSL {
     
     /// 【SnapKit:  width】
     /// 若需要 width 动态变化，可设置为 .max\.min
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     @discardableResult
     func width(_ width: AutoLayoutCompoundMultiplierValue = .bySuper) -> Self {
-        guard let ret = verify(at: .width, from: width.raw.item, extra: width.raw.mult, inSafe: width == .bySuperSafe) else { return self }
+        guard let ret = verify(at: .width, from: width.raw.item, extra: width.raw.mult, inSafe: false) else { return self }
         return multipliedBy(ret.item, for: .width, extra: ret.extra)
     }
     
@@ -155,9 +152,8 @@ public extension AutoLayoutViewDSL {
     /// 【SnapKit: height】
     /// 若需要 height 动态变化，可设置为 .max\.min
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func height(_ height: AutoLayoutCompoundMultiplierValue = .bySuper) -> Self {
-        guard let ret = verify(at: .height, from: height.raw.item, extra: height.raw.mult, inSafe: height == .bySuperSafe) else { return self }
+        guard let ret = verify(at: .height, from: height.raw.item, extra: height.raw.mult, inSafe: false) else { return self }
         return multipliedBy(ret.item, for: .height, extra: ret.extra)
     }
     

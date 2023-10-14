@@ -77,7 +77,7 @@ public extension AppViewsArrayDSL {
     func horzLayout(space: CGFloat = .offset,
                     insets: SnapEdgeInsets = SnapEdgeInsets(10)) -> Self
     {
-        array.enumerated { _, v, emRef, _, _ in
+        array.enumerated { v, emRef in
             let offset = emRef.isfirst ? insets.left : space
             v.lyt.vert(insets.top, insets.bottom)
             v.lyt.leading(by: emRef.refer?.lyt.trailing, offset: offset)
@@ -95,13 +95,16 @@ public extension AppViewsArrayDSL {
     func vertLayout(space: CGFloat = .offset,
                     insets: SnapEdgeInsets = SnapEdgeInsets(10)) -> Self
     {
-        array.enumerated { _, v, emrt, _, _ in
-
+        array.enumerated { v, emrt in
             let offset = emrt.isfirst ? insets.top : space
             v.lyt.horz(insets.left, insets.right)
             v.lyt.top(by: emrt.refer?.lyt.bottom, offset: offset)
-            if emrt.islast { v.lyt.bottom(insets.bottom) }
-            if let prev = emrt.refer { v.lyt.height(by: prev.lyt.height) }
+            if emrt.islast {
+                v.lyt.bottom(insets.bottom)
+            }
+            if let prev = emrt.refer {
+                v.lyt.height(by: prev.lyt.height)
+            }
         }
         return self
     }
@@ -118,15 +121,19 @@ public extension AppViewsArrayDSL {
                     spaces: AutoLayoutGridExtraValue = .global,
                     inset: SnapEdgeInsets = SnapEdgeInsets(10)) -> Self
     {
-        array.enumeratedGrid(colums: colums) { _, v, prev, row, col, _, _ in
+        array.enumeratedGrid(colums: colums) { v, prev, row, col in
             // rows
             let rowOffset = row.isfirst ? inset.top : spaces.raw.row
             v.lyt.top(by: row.refer?.lyt.bottom, offset: rowOffset)
-            if row.islast { v.lyt.bottom(inset.bottom) }
+            if row.islast {
+                v.lyt.bottom(inset.bottom)
+            }
             // cols
             let colOffset = col.isfirst ? inset.left : spaces.raw.col
             v.lyt.leading(by: col.refer?.lyt.trailing, offset: colOffset)
-            if col.islast { v.lyt.trailing(inset.right) }
+            if col.islast {
+                v.lyt.trailing(inset.right)
+            }
 
             if let prev = prev {
                 switch layout {
@@ -136,9 +143,9 @@ public extension AppViewsArrayDSL {
                 }
             }
         }
-        // fix first element size layout for squaure
-        if layout == .square, let fv = array.first, let lv = array.last {
-            fv.lyt.size(by: lv)
+        // Fix first element size layout for square
+        if layout == .square, let first = array.first, let last = array.last {
+            first.lyt.size(by: last)
         }
         return self
     }
@@ -157,30 +164,24 @@ private extension Array {
         }
     }
     
-    typealias EnumeratedBlock = (_ index: Int, _ elmt: Element, _ emRef: EnumeratedRefer, _ arr: Array<Element>, _ stop: inout Bool)->Void
-    typealias EnumeratedGridBlock = (_ index: Int, _ elmt: Element, _ prev: Element?, _ row: EnumeratedRefer, _ col: EnumeratedRefer, _ arr: Array<Element>, _ stop: inout Bool)->Void
-    
     /// 数组遍历
-    func enumerated(_ enumerate: EnumeratedBlock) {
+    func enumerated(_ enumerate: (_ elmt: Element, _ elmtRef: EnumeratedRefer)->Void) {
         
         guard count > 0 else { return }
         
-        let arr = self
         var prev: Element?
-        var stop = false
         
-        for (i,e) in arr.enumerated() {
-            if stop { break }
+        for (i,e) in self.enumerated() {
             
             let emrt = EnumeratedRefer(isfirst: i == 0, islast: i == count - 1, refer: prev)
-            enumerate(i, e, emrt, arr, &stop)
+            enumerate(e, emrt)
             
             prev = e
         }
     }
     
     /// 九宫格遍历
-    func enumeratedGrid(colums: Int, enumerate: EnumeratedGridBlock) {
+    func enumeratedGrid(colums: Int, enumerate: (_ elmt: Element, _ prev: Element?, _ rowRef: EnumeratedRefer, _ colRef: EnumeratedRefer)->Void) {
         
         guard count > 0 else { return }
         
@@ -189,10 +190,8 @@ private extension Array {
         let rows = count % colums == 0 ? count / colums : count / colums + 1
         
         var prev: Element?
-        var stop = false
         
         for (i,e) in arr.enumerated() {
-            if stop { break }
             
             let curRow = i / colums
             let curCol = i % colums
@@ -200,7 +199,7 @@ private extension Array {
             let row = EnumeratedRefer(isfirst: curRow == 0, islast: curRow == rows - 1, refer: arr.at(i - colums))
             let col = EnumeratedRefer(isfirst: curCol == 0, islast: curCol == colums - 1, refer: curCol == 0 ? nil : prev)
             
-            enumerate(i, e, prev, row, col, arr, &stop)
+            enumerate(e, prev, row, col)
             
             prev = e
         }

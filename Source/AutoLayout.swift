@@ -17,7 +17,7 @@ public typealias AppView = NSView
 
 public extension AppView {
     var lyt: AutoLayoutViewDSL {
-        return AutoLayoutViewDSL(view: self)
+        return layoutDSL
     }
 }
 
@@ -28,16 +28,22 @@ public extension Array where Element: AppView {
 }
 
 public extension AppView {
+    /// 添加视图，并返回布局对象
     @discardableResult
     func layout(_ view: AppView) -> AutoLayoutViewDSL {
-        self.addSubview(view)
+        if self != view {// 避免 lab.addSubview(lab) 情形
+            self.addSubview(view)
+        }
         return view.lyt
     }
     
+    /// 添加视图，并返回布局对象
     @discardableResult
     func layout(_ views: Array<AppView>) -> AppViewsArrayDSL {
         views.forEach { [weak self] view in
-            self?.addSubview(view)
+            // 避免 lab.addSubview(lab) 情形
+            guard let self = self, self != view else { return }
+            self.addSubview(view)
         }
         return views.lyt
     }
@@ -49,15 +55,15 @@ public extension AutoLayoutViewDSL {
     @discardableResult
     func removeConstraints() -> Self {
         view.snp.removeConstraints()
-        view.constraint?.remove()
+        view.constraint = nil
         return self
     }
 
     /// 是否在对应方向上进行压缩
     @discardableResult
-    func compress(_ compress: Bool, for axis: AppViewCompressPriority.Axis = .horizontal) -> Self {
+    func compress(_ compress: Bool, for axis: AppViewCompressPriority.CompressAxis = .horz) -> Self {
         let priority: AppViewCompressPriority.Priority = compress ? .defaultLow : .defaultHigh
-        view.setContentCompressionResistancePriority(priority, for: axis)
+        view.setContentCompressionResistancePriority(priority, for: AppViewCompressPriority.Axis(rawValue: axis.rawValue)!)
         return self
     }
     

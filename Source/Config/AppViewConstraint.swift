@@ -12,7 +12,7 @@ internal final class AppViewConstraint {
     typealias Attribute = AutoLayoutConstraints.Attribute
     typealias Relation = AutoLayoutConstraints.Relation
     
-    private var snps: [Attribute: LayoutItem] = [:]
+    private var constraints: [Attribute: LayoutItem] = [:]
     
     /// 更新本地存储约束信息
     /// - Parameters:
@@ -29,14 +29,14 @@ internal final class AppViewConstraint {
         }
         
         var relation = extra.raw.restrict.raw.relation
+        let value = extra.raw.val
+        
         // 约束信息不存在
-        guard let snp = snps[index] else {
+        guard let snp = constraints[index] else {
             // 存储约束信息
-            snps[index] = LayoutItem(index: index, anchor: anchor, extra: extra)
+            constraints[index] = LayoutItem(anchor: anchor, relation: relation, value: value)
             return (.comb(.make, relation), anchor.origin)
         }
-        
-        let value = extra.raw.val
         
         // 约束值未改变
         if snp.value == value {
@@ -45,18 +45,14 @@ internal final class AppViewConstraint {
         
         // 更新约束信息
         snp.value = value
-        snps[index] = snp
+        constraints[index] = snp
         
         // 当约束关系改变时，需要沿用旧的约束关系
         if snp.relation != relation {
             relation = snp.relation
         }
         // 返回布局配置
-        return (.comb(.update, relation), snp.item)
-    }
-    
-    func remove() {
-        snps.removeAll()
+        return (.comb(.update, relation), snp.anchor.origin)
     }
 }
 
@@ -69,9 +65,13 @@ private extension AppViewConstraint {
     /// - Returns: 验证结果
     func verify(at index: AutoLayoutConstraints.Attribute, isSuper: Bool) -> Bool {
         // 宽度冲突
-        if !horzVerify(at: index, isSuper: isSuper) { return false }
+        if !horzVerify(at: index, isSuper: isSuper) {
+            return false
+        }
         // 高度冲突
-        if !vertVerify(at: index, isSuper: isSuper) { return false }
+        if !vertVerify(at: index, isSuper: isSuper) {
+            return false
+        }
         // 通过验证
         return true
     }
@@ -82,12 +82,12 @@ private extension AppViewConstraint {
     ///   - isSuper: 是否相对父视图进行布局
     /// - Returns: 验证结果
     func horzVerify(at index: AutoLayoutConstraints.Attribute, isSuper: Bool) -> Bool {
-        guard let width = snps[.width] else {
+        guard let width = constraints[.width] else {
             return true
         }
-        let hasLeading = snps.has(key: .leading)
-        let hasTrailing = snps.has(key: .trailing)
-        let hasCenterX = snps.has(key: .centerX)
+        let hasLeading = constraints.has(key: .leading)
+        let hasTrailing = constraints.has(key: .trailing)
+        let hasCenterX = constraints.has(key: .centerX)
         let isEqual = width.relation == .equal
         
         let horzWidth = isEqual && (hasLeading && index == .trailing || hasTrailing && index == .leading) && isSuper
@@ -126,12 +126,12 @@ private extension AppViewConstraint {
     ///   - isSuper: 是否相对父视图进行布局
     /// - Returns: 验证结果
     func vertVerify(at index: AutoLayoutConstraints.Attribute, isSuper: Bool) -> Bool {
-        guard let height = snps[.height] else {
+        guard let height = constraints[.height] else {
             return true
         }
-        let hasTop = snps.has(key: .top)
-        let hasBottom = snps.has(key: .bottom)
-        let hasCenterY = snps.has(key: .centerY)
+        let hasTop = constraints.has(key: .top)
+        let hasBottom = constraints.has(key: .bottom)
+        let hasCenterY = constraints.has(key: .centerY)
         let isEqual = height.relation == .equal
         
         let vertHeight = isEqual && (hasTop && index == .bottom || hasBottom && index == .top) && isSuper
@@ -164,21 +164,16 @@ private extension AppViewConstraint {
     }
 }
 
-private final class LayoutItem: Equatable {
-    var relation: AutoLayoutConstraints.Relation
-    var index: AutoLayoutConstraints.Attribute
-    var item: ConstraintItem
+private final class LayoutItem {
+    typealias Relation = AutoLayoutConstraints.Relation
+    var relation: Relation
     var value: CGFloat
+    var anchor: AppViewConstraintAnchor
     
-    init(index: AutoLayoutConstraints.Attribute, anchor: AppViewConstraintAnchor, extra: AutoLayoutExtraValue) {
-        self.relation = extra.raw.restrict.raw.relation
-        self.index = index
-        self.item = anchor.origin
-        self.value = extra.raw.val
-    }
-    
-    static func == (lhs: LayoutItem, rhs: LayoutItem) -> Bool {
-        lhs.relation == rhs.relation && lhs.index == rhs.index && lhs.item == rhs.item
+    init(anchor: AppViewConstraintAnchor, relation: Relation, value: CGFloat) {
+        self.relation = relation
+        self.value = value
+        self.anchor = anchor
     }
 }
 

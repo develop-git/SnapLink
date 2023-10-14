@@ -12,8 +12,8 @@ public extension AutoLayoutViewDSL {
     /// 【SnapKit: 以传入视图的中心点设置当前对象的中心点偏移】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     @discardableResult
-    func center(offsetX: AutoLayoutExtraValue = .zero,
-                offsetY: AutoLayoutExtraValue = .zero) -> Self
+    func center(offsetX: AutoLayoutExtraValue = .non,
+                offsetY: AutoLayoutExtraValue = .non) -> Self
     {
         return self.centerX(offset: offsetX)
             .centerY(offset: offsetY)
@@ -34,9 +34,8 @@ public extension AutoLayoutViewDSL {
     }
     
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func centerX(_ offset: AutoLayoutCompoundExtraXaxisValue) -> Self {
-        guard let ret = verify(at: .centerX, from: offset.raw.item, extra: offset.raw.offset, inSafe: offset == .bySuperSafe) else { return self }
+        guard let ret = verify(at: .centerX, from: offset.raw.item, extra: offset.raw.offset, inSafe: false) else { return self }
         return offsetBy(ret.item, for: .centerX, extra: ret.extra)
     }
     
@@ -55,9 +54,8 @@ public extension AutoLayoutViewDSL {
     }
     
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func centerY(_ offset: AutoLayoutCompoundExtraYaxisValue) -> Self {
-        guard let ret = verify(at: .centerY, from: offset.raw.item, extra: offset.raw.offset, inSafe: offset == .bySuperSafe) else { return self }
+        guard let ret = verify(at: .centerY, from: offset.raw.item, extra: offset.raw.offset, inSafe: false) else { return self }
         return offsetBy(ret.item, for: .centerY, extra: ret.extra)
     }
     
@@ -65,8 +63,8 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     @discardableResult
     func center(by view: AppView,
-                offsetX: AutoLayoutExtraValue = .zero,
-                offsetY: AutoLayoutExtraValue = .zero) -> Self
+                offsetX: AutoLayoutExtraValue = .non,
+                offsetY: AutoLayoutExtraValue = .non) -> Self
     {
         return self.centerX(by: view.lyt.centerX, offset: offsetX)
             .centerY(by: view.lyt.centerY, offset: offsetY)

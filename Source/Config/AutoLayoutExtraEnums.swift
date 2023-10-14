@@ -10,7 +10,7 @@ public enum AutoLayoutGridExtraLayout: Int {
 }
 
 public enum AutoLayoutGridExtraValue {
-    case zero   // spaces = 0.0
+    case non   // spaces = 0.0
     case one    // spaces = 1.0
     case global // spaces = 10.0
     case vals(_ value: CGFloat) // spaces = value
@@ -23,7 +23,7 @@ public enum AutoLayoutGridExtraValue {
         switch self {
         case .diff(let row, let col):
             return (row, col)
-        case .zero:
+        case .non:
             return (zero, zero)
         case .one:
             return (one, one)
@@ -39,12 +39,12 @@ public enum AutoLayoutGridExtraValue {
     }
 }
 
-public enum AutoLayoutExtraValue : Equatable {
+public enum AutoLayoutExtraValue {
     //(offset\mult\width\height)
     
     /// Equal
     case global // = 10.0
-    case zero   // = 0.0
+    case non    // = 0.0
     case halfone   // = 0.5
     case one    // = 1.0
     
@@ -69,7 +69,7 @@ public enum AutoLayoutExtraValue : Equatable {
         /// Equal
         case .global:
             return (global, Relation.equal.constraints)
-        case .zero:
+        case .non:
             return (zero, Relation.equal.constraints)
         case .halfone:
             return (halfone, Relation.equal.constraints)
@@ -108,29 +108,23 @@ public enum AutoLayoutExtraValue : Equatable {
     }
 }
             
-public enum AutoLayoutCompoundOffsetValue<T: Equatable> : Equatable {
+public enum AutoLayoutCompoundOffsetValue<T> {
     
     case bySuper        // offset = 0.0
     
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    case bySuperSafe    // offset = 0.0
+    case byOffset(_ offset: AutoLayoutExtraValue)
     
-    case bySuperOffset(_ offset: AutoLayoutExtraValue)
     case by(_ item: T?, offset: AutoLayoutExtraValue = .global)
     
     var raw: (item: T?, offset: AutoLayoutExtraValue) {
         switch self {
         case .by(let item, let offset):
             return (item, offset)
-        case .bySuperOffset(let offset):
+        case .byOffset(let offset):
             return (nil, offset)
         default:
-            return (nil, .zero)
+            return (nil, .non)
         }
-    }
-    
-    public static func == (lhs: AutoLayoutCompoundOffsetValue<T>, rhs: AutoLayoutCompoundOffsetValue<T>) -> Bool {
-        lhs.raw.item == rhs.raw.item && lhs.raw.offset == rhs.raw.offset
     }
 }
 
@@ -138,51 +132,45 @@ public typealias AutoLayoutCompoundExtraXaxisValue = AutoLayoutCompoundOffsetVal
 public typealias AutoLayoutCompoundExtraYaxisValue = AutoLayoutCompoundOffsetValue<AppViewYaxisAnchor>
 
 
-public enum AutoLayoutCompoundMultiplierValue : Equatable {
+public enum AutoLayoutCompoundMultiplierValue {
     
     case bySuper        // multiplier = 1.0
     
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    case bySuperSafe    // multiplier = 1.0
+    case byMult(_ mult: AutoLayoutExtraValue)
     
-    case bySuperMult(_ mult: AutoLayoutExtraValue)
     case by(_ item: AppViewSizeAnchor?, mult: AutoLayoutExtraValue = .one)
     
     var raw: (item: AppViewSizeAnchor?, mult: AutoLayoutExtraValue) {
         switch self {
         case .by(let item, let mult):
             return (item, mult)
-        case .bySuperMult(let mult):
+        case .byMult(let mult):
             return (nil, mult)
         default:
             return (nil, .one)
         }
-    }
-    
-    public static func == (lhs: AutoLayoutCompoundMultiplierValue, rhs: AutoLayoutCompoundMultiplierValue) -> Bool {
-        lhs.raw.item == rhs.raw.item && lhs.raw.mult == rhs.raw.mult
     }
 }
 
 /// 压缩策略
 public enum AppViewCompressPriority {
 #if os(iOS) || os(tvOS)
-    public typealias Axis = NSLayoutConstraint.Axis
+    internal typealias Axis = NSLayoutConstraint.Axis
     public typealias Priority = UILayoutPriority
 #else
-    public typealias Axis = NSLayoutConstraint.Orientation
+    internal typealias Axis = NSLayoutConstraint.Orientation
     public typealias Priority = NSLayoutConstraint.Priority
 #endif
     /// 压缩方向
     public enum CompressAxis : Int {
         case horz = 0, vert = 1
     }
-    /// 正常显示方向
-    case normal(_ axis: CompressAxis)
-    /// 压缩方向
-    case comprass(_ axis: CompressAxis)
+    /// 是否在水平/垂直方向上进行压缩
+    case compress(_ compress: Bool, for: CompressAxis = .horz)
+    
     /// 水平方向 显示策略（压缩/正常。。。）
     case horz(_ priority: Priority)
+    
     /// 垂直方向 显示策略（压缩/正常。。。）
     case vert(_ priority: Priority)
     
@@ -192,9 +180,10 @@ public enum AppViewCompressPriority {
             return (Axis(rawValue: 0)!, pr)
         case .vert(let pr):
             return (Axis(rawValue: 1)!, pr)
-        case .normal(let ori):
-            return (Axis(rawValue: ori.rawValue)!, .defaultHigh)
-        case .comprass(let ori):
+        case .compress(let res, let ori):
+            if res {
+                return (Axis(rawValue: ori.rawValue)!, .defaultHigh)
+            }
             return (Axis(rawValue: ori.rawValue)!, .defaultLow)
         }
     }

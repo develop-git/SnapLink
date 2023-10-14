@@ -13,6 +13,26 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let vc = UIViewController()
+        vc.view.backgroundColor = .blue
+        let lab = UILabel()
+        vc.view.addSubview(lab)
+        
+        let lab2 = UILabel()
+        lab2.backgroundColor = .green
+        view.layout(lab2)
+            .horz()
+            .top(by: lab.lyt.bottom)
+            .height(40)
+        
+        /** 等价关系
+         view.layout(lab)
+            ||
+         view.addSubview(lab)
+         lab.lyt
+         */
+        
         // 使用案例
 //        topExample()
 //        bottomExample()
@@ -22,8 +42,8 @@ class ViewController: UIViewController {
 //        fillExample()
 //        horizontalExample()
 //        verticalExample()
-        grid()
-//        divide()
+//        grid()
+        divide()
     }
 
     override func didReceiveMemoryWarning() {
@@ -40,7 +60,7 @@ extension ViewController {
         /// 更多使用方法，请修改参数试试
         let lab = UILabel()
         lab.backgroundColor = .green
-        lab.lyt
+        view.layout(lab)
             .size(10) // size = 10
             .size(.bySuper) // size = view.size
             .size(by: view) // size = view.size
@@ -54,7 +74,7 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加顶部边距
-        lab.lyt
+        view.layout(lab)
             .width(10) // width = 10
             .width(.max(30)) // width <= 30
             .width(.min(30)) // width >= 30
@@ -71,7 +91,7 @@ extension ViewController {
         /// 更多使用方法，请修改参数试试
         let lab = UILabel()
         lab.backgroundColor = .green
-        lab.lyt
+        view.layout(lab)
             .height(10) // height = 10
             .height(.max(30)) // height <= 30
             .height(.min(30)) // height >= 30
@@ -90,12 +110,13 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加顶部边距
-        lab.lyt
+        view.addSubview(lab)
+        view.layout(lab)
             // 未添加安全区域
             // 相对父视图布局
             .top(10) // offset = 10
             .top(.bySuper) // offset = 0
-            .top(.bySuperOffset(.one)) // offset = 1.0
+            .top(.byOffset(.one)) // offset = 1.0
             .top(.max(10)) // offset <= 10
             .top(.min(10)) // offset >= 10
             // 相对目标视图布局
@@ -120,12 +141,12 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加底部部边距
-        lab.lyt
+        view.layout(lab)
             // 未添加安全区域
             // 相对父视图布局
             .bottom(10) // offset = 10
             .bottom(.bySuper) // offset = 0
-            .bottom(.bySuperOffset(.one)) // offset = 1.0
+            .bottom(.byOffset(.one)) // offset = 1.0
             .bottom(.max(10)) // offset <= 10
             .bottom(.min(10)) // offset >= 10
             // 相对目标视图布局
@@ -150,12 +171,12 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左侧边距
-        lab.lyt
+        view.layout(lab)
             // 未添加安全区域
             // 相对父视图布局
             .leading(10) // offset = 10
             .leading(.bySuper) // offset = 0
-            .leading(.bySuperOffset(.one)) // offset = 1.0
+            .leading(.byOffset(.one)) // offset = 1.0
             .leading(.max(10)) // offset <= 10
             .leading(.min(10)) // offset >= 10
             // 相对目标视图布局
@@ -180,12 +201,12 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加右侧边距
-        lab.lyt
+        view.layout(lab)
             // 未添加安全区域
             // 相对父视图布局
             .trailing(10) // offset = 10
             .trailing(.bySuper) // offset = 0
-            .trailing(.bySuperOffset(.one)) // offset = 1.0
+            .trailing(.byOffset(.one)) // offset = 1.0
             .trailing(.max(10)) // offset <= 10
             .trailing(.min(10)) // offset >= 10
             // 相对目标视图布局
@@ -210,7 +231,7 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左右两侧侧边距
-        lab.lyt
+        view.layout(lab)
             // 未添加安全区域
             // 相对父视图布局
             .horz(10) // offset = 10
@@ -218,7 +239,7 @@ extension ViewController {
             .horz(.min(10)) // offset >= 10
             // 相对目标视图布局
             .horz(by: view) // offset = 10
-            
+            .horz(.byOffset(.global), .byOffset(.max(10)))
         
             // 添加安全区域, 设置思路同上
             // 相对父视图布局
@@ -232,7 +253,7 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左右两侧侧边距
-        lab.lyt
+        view.layout(lab)
             // 未添加安全区域
             // 相对父视图布局
             .vert(10) // offset = 10
@@ -251,12 +272,12 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左右两侧侧边距
-        lab.lyt
+        view.layout(lab)
             // 未添加安全区域
             // 相对父视图布局
             .margins(10) // offset = 10
             .margins(.horz, 10)
-            .margins(UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20).ui)
+            .margins(.insets(.top, 10))
     }
     
     // MARK: fill
@@ -266,7 +287,7 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左右两侧侧边距
-        lab.lyt
+        view.layout(lab)
             // 未添加安全区域
             // 相对父视图布局
             .fill() // offset = 10
@@ -296,8 +317,6 @@ extension ViewController {
             labs.append(lab)
         }
         temp.layout(labs)
-            /// 水平平分视图
-            //.horzLayout()
             /// 九宫格布局
             .gridLayout()
     }
@@ -317,13 +336,14 @@ extension ViewController {
             let lab = UILabel()
             lab.text = "\(idx)"
             lab.backgroundColor = .red
+            lab.textAlignment = .center
             labs.append(lab)
         }
         temp.layout(labs)
             /// 水平平分视图
-            //.horzLayout()
+            .horzLayout()
             /// 垂直平分视图
-            .vertLayout()
+//            .vertLayout()
     }
 }
 

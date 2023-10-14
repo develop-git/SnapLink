@@ -26,9 +26,8 @@ public extension AutoLayoutViewDSL {
     
     /// 【SnapKit: 下边距 】
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func bottom(_ offset: AutoLayoutCompoundExtraYaxisValue) -> Self {
-        guard let ret = verify(at: .bottom, from: offset.raw.item, extra: offset.raw.offset.invertVal, inSafe: offset == .bySuperSafe) else { return self }
+        guard let ret = verify(at: .bottom, from: offset.raw.item, extra: offset.raw.offset.invertVal, inSafe: false) else { return self }
         return offsetBy(ret.item, for: .bottom, extra: ret.extra)
     }
     
@@ -117,7 +116,6 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func bottomCenterX(_ bottom: AutoLayoutCompoundExtraYaxisValue,
                        _ centerX: AutoLayoutCompoundExtraXaxisValue? = nil) -> Self
     {
@@ -133,7 +131,7 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    func bottomCenterX(by bottom: AppView, offset: AutoLayoutExtraValue = .zero) -> Self {
+    func bottomCenterX(by bottom: AppView, offset: AutoLayoutExtraValue = .non) -> Self {
         return self.bottom(by: bottom, offset: offset).centerX(by: bottom)
     }
 }

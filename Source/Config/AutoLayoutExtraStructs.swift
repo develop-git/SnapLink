@@ -9,6 +9,11 @@
 
 public struct SnapEdgeInsets {
     
+    public var top: CGFloat
+    public var left: CGFloat
+    public var bottom: CGFloat
+    public var right: CGFloat
+    
     public init(horz: CGFloat, vert: CGFloat) {
         self.init(top: vert, left: horz, bottom: vert, right: horz)
     }
@@ -23,23 +28,30 @@ public struct SnapEdgeInsets {
         self.left = left
         self.right = right
     }
+    
+    public init(_ edge: SnapRectEdge, _ len: CGFloat) {
+        self.top = edge.contains(.top) ? len : 0.0
+        self.bottom = edge.contains(.bottom) ? len : 0.0
+        self.left = edge.contains(.left) ? len : 0.0
+        self.right = edge.contains(.right) ? len : 0.0
+    }
 
-    public var top: CGFloat
+    public static func insets(horz: CGFloat, vert: CGFloat) -> SnapEdgeInsets {
+        return .init(top: vert, left: horz, bottom: vert, right: horz)
+    }
+    
+    public static func insets(_ len: CGFloat = 0.0) -> SnapEdgeInsets {
+        return .init(top: len, left: len, bottom: len, right: len)
+    }
 
-    public var left: CGFloat
-
-    public var bottom: CGFloat
-
-    public var right: CGFloat
-}
-
-#if os(iOS) || os(tvOS)
-public extension UIEdgeInsets {
-    var ui: SnapEdgeInsets {
-        return SnapEdgeInsets(top: top, left: left, bottom: bottom, right: right)
+    public static func insets(top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) -> SnapEdgeInsets {
+        return .init(top: top, left: left, bottom: bottom, right: right)
+    }
+    
+    public static func insets(_ edge: SnapRectEdge, _ len: CGFloat) -> SnapEdgeInsets {
+        return .init(edge, len)
     }
 }
-#endif
 
 public struct SnapRectEdge : OptionSet {
     public var rawValue: UInt

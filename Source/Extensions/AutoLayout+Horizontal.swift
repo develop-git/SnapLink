@@ -95,7 +95,6 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func horz(_ leading: AutoLayoutCompoundExtraXaxisValue,
               _ trailing: AutoLayoutCompoundExtraXaxisValue) -> Self
     {
@@ -105,8 +104,8 @@ public extension AutoLayoutViewDSL {
     
     @discardableResult
     func horz(by view: AppView,
-              leading: AutoLayoutExtraValue = .zero,
-              trailing: AutoLayoutExtraValue = .zero) -> Self
+              leading: AutoLayoutExtraValue = .non,
+              trailing: AutoLayoutExtraValue = .non) -> Self
     {
         return self.leading(by: view.lyt.leading, offset: leading)
             .trailing(by: view.lyt.trailing, offset: trailing)

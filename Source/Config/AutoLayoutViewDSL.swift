@@ -10,8 +10,10 @@ import SnapKit
 
 public struct AutoLayoutViewDSL {
     internal let view: AppView
+    internal let responder: Controller?
     internal init(view: AppView) {
         self.view = view
+        self.responder = view.viewController
     }
 }
 
@@ -116,10 +118,13 @@ internal extension AutoLayoutViewDSL {
                 extra: AutoLayoutExtraValue,
                 inSafe: Bool = false) -> (item: ConstraintItem, extra: AutoLayoutExtraValue)?
     {
+        
         guard let anchor = anchor ?? superAnchor(at: index, inSafe: inSafe) else { return nil }
         
-        // 布局目标未添加到控制器中，不进行布局
-        if anchor.viewController == nil {
+        // 布局视图未添加到父视图，不进行布局
+        // 目标视图未添加到父视图，或目标视图非布局视图的父视图，不进行布局
+        // 布局视图和目标视图不在同一控制器上
+        if self.responder == nil || anchor.view.lyt.responder == nil || self.responder != anchor.view.lyt.responder {
             return nil
         }
         
@@ -129,15 +134,13 @@ internal extension AutoLayoutViewDSL {
         }
         
         // 更新视图储存的约束值
-        let res = view.constraint!.update(at: index, anchor: anchor, extra: extra, isSuper: view.superview == anchor.view)
-        
-        // 无需更新布局
-        if res == nil {
+        guard let res = view.constraint!.update(at: index, anchor: anchor, extra: extra, isSuper: view.superview == anchor.view) else {
+            // 无需进行布局
             return nil
         }
         
         // 返回布局信息
-        return (res!.item, .comb(res!.restrict, extra.raw.val))
+        return (res.item, .comb(res.restrict, extra.raw.val))
     }
 
     @discardableResult
@@ -224,50 +227,50 @@ private extension AutoLayoutViewDSL {
     func superAnchor(at index: Attribute, inSafe: Bool) -> AppViewConstraintAnchor? {
         switch index {
         case .leading:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
-                return inSafe ? view.superview?.lyt.leadingSafe : view.superview?.lyt.leading
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.leadingSafe
             } else {
                 return view.superview?.lyt.leading
             }
         case .trailing:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
-                return inSafe ? view.superview?.lyt.trailingSafe : view.superview?.lyt.trailing
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.trailingSafe
             } else {
                 return view.superview?.lyt.trailing
             }
         case .centerX:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
-                return inSafe ? view.superview?.lyt.centerSafeX : view.superview?.lyt.centerX
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.centerSafeX
             } else {
                 return view.superview?.lyt.centerX
             }
         case .top:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
-                return inSafe ? view.superview?.lyt.topSafe : view.superview?.lyt.top
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.topSafe
             } else {
                 return view.superview?.lyt.top
             }
         case .bottom:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
-                return inSafe ? view.superview?.lyt.bottomSafe : view.superview?.lyt.bottom
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.bottomSafe
             } else {
                 return view.superview?.lyt.bottom
             }
         case .centerY:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
-                return inSafe ? view.superview?.lyt.centerSafeY : view.superview?.lyt.centerY
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.centerSafeY
             } else {
                 return view.superview?.lyt.centerY
             }
         case .width:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
-                return inSafe ? view.superview?.lyt.widthSafe : view.superview?.lyt.width
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.widthSafe
             } else {
                 return view.superview?.lyt.width
             }
         case .height:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
-                return inSafe ? view.superview?.lyt.heightSafe : view.superview?.lyt.height
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.heightSafe
             } else {
                 return view.superview?.lyt.height
             }
@@ -275,18 +278,28 @@ private extension AutoLayoutViewDSL {
     }
 }
 
-
+// MARK: Associated
 internal extension AppView {
-    private struct OBJC {
-        static var KEY: Void?
+    private struct OBJCKEY {
+        static var CONSTRAINT: Void?
+        static var DSL: Void?
     }
     var constraint: AppViewConstraint? {
         get {
-            objc_getAssociatedObject(self, &OBJC.KEY) as? AppViewConstraint
+            objc_getAssociatedObject(self, &OBJCKEY.CONSTRAINT) as? AppViewConstraint
         }
         set {
-            objc_setAssociatedObject(self, &OBJC.KEY, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &OBJCKEY.CONSTRAINT, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
+    }
+    
+    var layoutDSL: AutoLayoutViewDSL {
+        guard let dsl = objc_getAssociatedObject(self, &OBJCKEY.DSL) as? AutoLayoutViewDSL else {
+            let res = AutoLayoutViewDSL(view: self)
+            objc_setAssociatedObject(self, &OBJCKEY.DSL, res, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return res
+        }
+        return dsl
     }
 }
 

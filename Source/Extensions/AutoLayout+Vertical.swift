@@ -92,7 +92,6 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func vert(_ top: AutoLayoutCompoundExtraYaxisValue,
               _ bottom: AutoLayoutCompoundExtraYaxisValue) -> Self
     {
@@ -105,8 +104,8 @@ public extension AutoLayoutViewDSL {
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
     func vert(by view: AppView,
-              top: AutoLayoutExtraValue = .zero,
-              bottom: AutoLayoutExtraValue = .zero) -> Self
+              top: AutoLayoutExtraValue = .non,
+              bottom: AutoLayoutExtraValue = .non) -> Self
     {
         return self.top(by: view.lyt.top, offset: top)
             .bottom(by: view.lyt.bottom, offset: bottom)
