@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double AutoLayoutVersionNumber;
-FOUNDATION_EXPORT const unsigned char AutoLayoutVersionString[];
+FOUNDATION_EXPORT double AutoLayoutLinkVersionNumber;
+FOUNDATION_EXPORT const unsigned char AutoLayoutLinkVersionString[];
 

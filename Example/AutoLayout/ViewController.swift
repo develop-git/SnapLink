@@ -6,7 +6,7 @@
 //  Copyright (c) 2023 承轩. All rights reserved.
 //
 
-import AutoLayout
+import AutoLayoutLink
 import UIKit
 
 class ViewController: UIViewController {
@@ -19,7 +19,6 @@ class ViewController: UIViewController {
          view.addSubview(lab)
          lab.lyt
          */
-        
         let temp = UIView()
         temp.backgroundColor = .cyan
         view.layoutAv(temp)

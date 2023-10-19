@@ -3,7 +3,7 @@ use_frameworks!
 platform :ios, '10.0'
 
 target 'AutoLayout_Example' do
-  pod 'AutoLayout', :path => '../'
+  pod 'AutoLayoutLink', :path => '../'
 
   target 'AutoLayout_Tests' do
     inherit! :search_paths

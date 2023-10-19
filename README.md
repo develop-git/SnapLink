@@ -1,16 +1,11 @@
-# AutoLayout
-
-[![CI Status](https://img.shields.io/travis/FullStack-Jian/AutoLayout.svg?style=flat)](https://travis-ci.org/FullStack-Jian/AutoLayout)
-[![Version](https://img.shields.io/cocoapods/v/AutoLayout.svg?style=flat)](https://cocoapods.org/pods/AutoLayout)
-[![License](https://img.shields.io/cocoapods/l/AutoLayout.svg?style=flat)](https://cocoapods.org/pods/AutoLayout)
-[![Platform](https://img.shields.io/cocoapods/p/AutoLayout.svg?style=flat)](https://cocoapods.org/pods/AutoLayout)
+#AutoLayoutLink
 
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ```ruby
-import AutoLayout
+import AutoLayoutLink
 
 class ViewController: UIViewController {
 
@@ -46,7 +41,7 @@ it, simply add the following line to your Podfile:
 
 ```ruby
 
-pod 'AutoLayout', '~> 1.2.1'
+pod 'AutoLayout', '~> 1.3.0'
 
 ```
 
