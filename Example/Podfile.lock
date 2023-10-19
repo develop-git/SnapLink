@@ -1,23 +1,23 @@
 PODS:
-  - AutoLayout-SnapKit (1.0.0):
+  - AutoLayout (1.1.2):
     - SnapKit (~> 5.6.0)
   - SnapKit (5.6.0)
 
 DEPENDENCIES:
-  - AutoLayout-SnapKit (from `../`)
+  - AutoLayout (from `../`)
 
 SPEC REPOS:
   trunk:
     - SnapKit
 
 EXTERNAL SOURCES:
-  AutoLayout-SnapKit:
+  AutoLayout:
     :path: "../"
 
 SPEC CHECKSUMS:
-  AutoLayout-SnapKit: 64be8b3ad301707c8e4b972182712a3114b9a0d8
+  AutoLayout: 4f7db5be747161238e454fc955aa6fa2e1a268a5
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
 
-PODFILE CHECKSUM: 8a6491fa108820849a2ed4c5016a47af8387f757
+PODFILE CHECKSUM: 56b429d4fb3284d6d7782ce68e500982b6c216d8
 
 COCOAPODS: 1.13.0

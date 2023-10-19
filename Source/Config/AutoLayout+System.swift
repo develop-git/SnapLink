@@ -1,12 +1,9 @@
 //
 //  DefaultValues.swift
-//  AutoLayout-SnapKit
+//  AutoLayout
 //
-//  Created by 承轩 on 2023/8/11.
+//  Created by jian on 2023/8/11.
 //
-
-
-#if canImport(SnapKit)
 
 public extension CGFloat {
     static var offset: CGFloat {
@@ -46,4 +43,3 @@ internal extension AppView {
     }
 #endif
 }
-#endif

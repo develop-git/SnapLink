@@ -1,16 +1,15 @@
 //
 //  SnapKit+horz.swift
-//  AutoLayout-SnapKit
+//  AutoLayout
 //
-//  Created by 承轩 on 2023/8/10.
+//  Created by jian on 2023/8/10.
 //
 
-#if canImport(SnapKit)
 
 // MARK: 水平
 
 public extension AutoLayoutViewDSL {
-    /// 【SnapKit: 左右边距，默认 10 】
+    /// 【左右边距，默认 10 】
     @discardableResult
     func horz(_ offset: CGFloat = .offset) -> Self {
         return self.leading(offset)
@@ -34,7 +33,7 @@ public extension AutoLayoutViewDSL {
         }
     }
     
-    /// 【SnapKit: 左右安全边距，默认 10 】
+    /// 【左右安全边距，默认 10 】
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func horzSafe(_ offset: CGFloat = .offset) -> Self {
@@ -68,7 +67,7 @@ public extension AutoLayoutViewDSL {
             .trailing(trailing)
     }
     
-    /// 【SnapKit: 左右边距，默认 10 】
+    /// 【左右边距，默认 10 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -79,7 +78,7 @@ public extension AutoLayoutViewDSL {
             .trailing(trailing)
     }
     
-    /// 【SnapKit: 左右安全边距，默认 10 】
+    /// 【左右安全边距，默认 10 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -91,7 +90,7 @@ public extension AutoLayoutViewDSL {
             .trailingSafe(trailing)
     }
     
-    /// 【SnapKit: 左右边距】
+    /// 【左右边距】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -104,12 +103,10 @@ public extension AutoLayoutViewDSL {
     
     @discardableResult
     func horz(by view: AppView,
-              leading: AutoLayoutExtraValue = .non,
-              trailing: AutoLayoutExtraValue = .non) -> Self
+              leading: AutoLayoutExtraValue = .eq(.zero),
+              trailing: AutoLayoutExtraValue = .eq(.zero)) -> Self
     {
         return self.leading(by: view.lyt.leading, offset: leading)
             .trailing(by: view.lyt.trailing, offset: trailing)
     }
 }
-
-#endif

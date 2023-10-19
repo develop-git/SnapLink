@@ -1,15 +1,14 @@
 //
 //  SnapKit+vert.swift
-//  AutoLayout-SnapKit
+//  AutoLayout
 //
-//  Created by 承轩 on 2023/8/10.
+//  Created by jian on 2023/8/10.
 //
 
-#if canImport(SnapKit)
 
 // MARK: 垂直
 public extension AutoLayoutViewDSL {
-    /// 【SnapKit: 上下边距，默认 10 】
+    /// 【上下边距，默认 10 】
     @discardableResult
     func vert(_ offset: CGFloat = .offset) -> Self {
         return self.top(offset)
@@ -32,7 +31,7 @@ public extension AutoLayoutViewDSL {
         }
     }
     
-    /// 【SnapKit: 上下边距，默认 10 】
+    /// 【上下边距，默认 10 】
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func vertSafe(_ offset: CGFloat = .offset) -> Self {
@@ -65,7 +64,7 @@ public extension AutoLayoutViewDSL {
             .bottom(bottom)
     }
     
-    /// 【SnapKit: 左右边距，默认 10 】
+    /// 【左右边距，默认 10 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -76,7 +75,7 @@ public extension AutoLayoutViewDSL {
             .bottom(bottom)
     }
     
-    /// 【SnapKit: 左右安全边距，默认 10 】
+    /// 【左右安全边距，默认 10 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -88,7 +87,7 @@ public extension AutoLayoutViewDSL {
             .bottomSafe(bottom)
     }
     
-    /// 【SnapKit: 左右边距，默认 0 】
+    /// 【左右边距，默认 0 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -99,17 +98,15 @@ public extension AutoLayoutViewDSL {
             .bottom(bottom)
     }
     
-    /// 【SnapKit: 左右边距，默认 0 】
+    /// 【左右边距，默认 0 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
     func vert(by view: AppView,
-              top: AutoLayoutExtraValue = .non,
-              bottom: AutoLayoutExtraValue = .non) -> Self
+              top: AutoLayoutExtraValue = .eq(.zero),
+              bottom: AutoLayoutExtraValue = .eq(.zero)) -> Self
     {
         return self.top(by: view.lyt.top, offset: top)
             .bottom(by: view.lyt.bottom, offset: bottom)
     }
 }
-
-#endif

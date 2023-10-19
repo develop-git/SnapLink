@@ -1,118 +1,117 @@
 //
 //  SnapKit+Leading.swift
-//  AutoLayout-SnapKit
+//  AutoLayout
 //
-//  Created by 承轩 on 2023/8/10.
+//  Created by jian on 2023/8/10.
 //
 
-#if canImport(SnapKit)
 
 // MARK: leading
 public extension AutoLayoutViewDSL {
-    /// 【SnapKit: 左边距，默认 10 】
+    /// 【左边距，默认 10 】
     @discardableResult
     func leading(_ offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .leading, extra: .equal(offset)) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        guard let ret = verify(at: .leading, extra: .eq(offset)) else { return self }
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左边距 】
+    /// 【左边距 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     func leading(_ offset: AutoLayoutExtraValue) -> Self {
         guard let ret = verify(at: .leading, extra: offset) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左边距 】
+    /// 【左边距 】
     @discardableResult
     func leading(_ offset: AutoLayoutCompoundExtraXaxisValue) -> Self {
         guard let ret = verify(at: .leading, from: offset.raw.item, extra: offset.raw.offset, inSafe: false) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左安全边距，默认 10 】
+    /// 【左安全边距，默认 10 】
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func leadingSafe(_ offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .leading, extra: .equal(offset), inSafe: true) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        guard let ret = verify(at: .leading, extra: .eq(offset), inSafe: true) else { return self }
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左安全边距 】
+    /// 【左安全边距 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func leadingSafe(_ offset: AutoLayoutExtraValue) -> Self {
         guard let ret = verify(at: .leading, extra: offset, inSafe: true) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左边距 】
+    /// 【左边距 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     func leading(by anchor: AppViewXaxisAnchor?, offset: AutoLayoutExtraValue) -> Self {
         guard let ret = verify(at: .leading, from: anchor, extra: offset) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左边距，默认 10 】
+    /// 【左边距，默认 10 】
     @discardableResult
     func leading(by anchor: AppViewXaxisAnchor?, offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .leading, from: anchor, extra: .equal(offset)) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        guard let ret = verify(at: .leading, from: anchor, extra: .eq(offset)) else { return self }
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左边距 】
+    /// 【左边距 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     func leading(by view: AppView, offset: AutoLayoutExtraValue) -> Self {
         guard let ret = verify(at: .leading, from: view.lyt.leading, extra: offset) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左边距，默认 0 】
+    /// 【左边距，默认 0 】
     @discardableResult
     func leading(by view: AppView, offset: CGFloat = .zero) -> Self {
-        guard let ret = verify(at: .leading, from: view.lyt.leading, extra: .equal(offset)) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        guard let ret = verify(at: .leading, from: view.lyt.leading, extra: .eq(offset)) else { return self }
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左安全边距】
+    /// 【左安全边距】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func leadingSafe(by anchor: AppViewXaxisAnchor?, offset: AutoLayoutExtraValue) -> Self {
         guard let ret = verify(at: .leading, from: anchor, extra: offset, inSafe: true) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左安全边距，默认 10 】
+    /// 【左安全边距，默认 10 】
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func leadingSafe(by anchor: AppViewXaxisAnchor?, offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .leading, from: anchor, extra: .equal(offset), inSafe: true) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        guard let ret = verify(at: .leading, from: anchor, extra: .eq(offset), inSafe: true) else { return self }
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左安全边距 】
+    /// 【左安全边距 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func leadingSafe(by view: AppView, offset: AutoLayoutExtraValue) -> Self {
         guard let ret = verify(at: .leading, from: view.lyt.leadingSafe, extra: offset, inSafe: true) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左安全边距，默认 0 】
+    /// 【左安全边距，默认 0 】
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func leadingSafe(by view: AppView, offset: CGFloat = .zero) -> Self {
-        guard let ret = verify(at: .leading, from: view.lyt.leadingSafe, extra: .equal(offset), inSafe: true) else { return self }
-        return offsetBy(ret.item, for: .leading, extra: ret.extra)
+        guard let ret = verify(at: .leading, from: view.lyt.leadingSafe, extra: .eq(offset), inSafe: true) else { return self }
+        return offsetBy(ret.anchor, for: .leading, extra: ret.extra)
     }
     
-    /// 【SnapKit: 左中边距，默认 0 】
+    /// 【左中边距，默认 0 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -127,11 +126,11 @@ public extension AutoLayoutViewDSL {
             .centerY(centerY)
     }
     
-    /// 【SnapKit: 左中边距，默认 0 】
+    /// 【左中边距，默认 0 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    func leadingCenterY(by leading: AppView, offset: AutoLayoutExtraValue = .non) -> Self {
+    func leadingCenterY(by leading: AppView, offset: AutoLayoutExtraValue = .eq(.zero)) -> Self {
         return self.leading(by: leading, offset: offset)
             .centerY(by: leading)
     }
@@ -139,12 +138,18 @@ public extension AutoLayoutViewDSL {
 
 // MARK: 左上 左下(done)
 public extension AutoLayoutViewDSL {
-    /// 【SnapKit: 左上边距，默认 10 】
+    /// 【左上边距，默认 10 】
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
     func leadingTop(_ value: CGFloat = .offset) -> Self {
         return self.leading(value)
             .top(value)
+    }
+    
+    @discardableResult
+    func leadingTop(by view: AppView, offset: CGFloat = 0) -> Self {
+        return self.leading(by: view, offset: offset)
+            .top(by: view, offset: offset)
     }
     
     @discardableResult
@@ -154,7 +159,7 @@ public extension AutoLayoutViewDSL {
             .topSafe(value)
     }
     
-    /// 【SnapKit: 左上边距，默认 0 】
+    /// 【左上边距，默认 0 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -165,7 +170,7 @@ public extension AutoLayoutViewDSL {
             .top(top)
     }
     
-    /// 【SnapKit: 左上边距，默认 10 】
+    /// 【左上边距，默认 10 】
     /// 若需要 offset 动态变化，将值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -176,7 +181,7 @@ public extension AutoLayoutViewDSL {
             .top(top)
     }
     
-    /// 【SnapKit: 左下边距，默认 10 】
+    /// 【左下边距，默认 10 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -186,13 +191,19 @@ public extension AutoLayoutViewDSL {
     }
     
     @discardableResult
+    func leadingBottom(by view: AppView, offset: CGFloat = 0) -> Self {
+        return self.leading(by: view, offset: offset)
+            .bottom(by: view, offset: offset)
+    }
+    
+    @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
     func leadingBottomSafe(_ value: CGFloat = .offset) -> Self {
         return self.leadingSafe(value)
             .bottomSafe(value)
     }
     
-    /// 【SnapKit: 左下边距，默认 10 】
+    /// 【左下边距，默认 10 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -203,7 +214,7 @@ public extension AutoLayoutViewDSL {
             .bottom(bottom)
     }
     
-    /// 【SnapKit: 左下边距，默认 10 】
+    /// 【左下边距，默认 10 】
     /// 若需要 offset 动态变化，将值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -214,5 +225,3 @@ public extension AutoLayoutViewDSL {
             .bottom(bottom)
     }
 }
-
-#endif

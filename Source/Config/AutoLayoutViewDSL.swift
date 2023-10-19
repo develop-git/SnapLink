@@ -1,19 +1,18 @@
 //
 //  AutoLayoutViewDSL.swift
-//  AutoLayout-SnapKit
+//  AutoLayout
 //
-//  Created by 承轩 on 2023/8/10.
+//  Created by jian on 2023/8/10.
 //
-
-#if canImport(SnapKit)
-import SnapKit
 
 public struct AutoLayoutViewDSL {
     internal let view: AppView
-    internal let responder: Controller?
+    private let responder: Controller?
+    internal let constraint: AppViewConstraint
     internal init(view: AppView) {
         self.view = view
         self.responder = view.viewController
+        self.constraint = AppViewConstraint()
     }
 }
 
@@ -24,85 +23,6 @@ public struct AppViewsArrayDSL {
     }
 }
 
-public extension AutoLayoutViewDSL {
-    var width: AppViewSizeAnchor {
-        return AppViewSizeAnchor(origin: view.snp.width, view: view)
-    }
-
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    var widthSafe: AppViewSizeAnchor {
-        return AppViewSizeAnchor(origin: view.safeAreaLayoutGuide.snp.width, view: view)
-    }
-
-    var height: AppViewSizeAnchor {
-        return AppViewSizeAnchor(origin: view.snp.height, view: view)
-    }
-
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    var heightSafe: AppViewSizeAnchor {
-        return AppViewSizeAnchor(origin: view.safeAreaLayoutGuide.snp.height, view: view)
-    }
-}
-
-public extension AutoLayoutViewDSL {
-    // MARK: - y-axis (top bottom centerY)
-
-    var top: AppViewYaxisAnchor {
-        return AppViewYaxisAnchor(origin: view.snp.top, view: view)
-    }
-
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    var topSafe: AppViewYaxisAnchor {
-        return AppViewYaxisAnchor(origin: view.safeAreaLayoutGuide.snp.top, view: view)
-    }
-
-    var bottom: AppViewYaxisAnchor {
-        return AppViewYaxisAnchor(origin: view.snp.bottom, view: view)
-    }
-
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    var bottomSafe: AppViewYaxisAnchor {
-        return AppViewYaxisAnchor(origin: view.safeAreaLayoutGuide.snp.bottom, view: view)
-    }
-
-    var centerY: AppViewYaxisAnchor {
-        return AppViewYaxisAnchor(origin: view.snp.centerY, view: view)
-    }
-
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    var centerSafeY: AppViewYaxisAnchor {
-        return AppViewYaxisAnchor(origin: view.safeAreaLayoutGuide.snp.centerY, view: view)
-    }
-
-    // MARK: - x-axis (leading trailing centerX)
-
-    var leading: AppViewXaxisAnchor {
-        return AppViewXaxisAnchor(origin: view.snp.leading, view: view)
-    }
-
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    var leadingSafe: AppViewXaxisAnchor {
-        return AppViewXaxisAnchor(origin: view.safeAreaLayoutGuide.snp.leading, view: view)
-    }
-
-    var trailing: AppViewXaxisAnchor {
-        return AppViewXaxisAnchor(origin: view.snp.trailing, view: view)
-    }
-
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    var trailingSafe: AppViewXaxisAnchor {
-        return AppViewXaxisAnchor(origin: view.safeAreaLayoutGuide.snp.trailing, view: view)
-    }
-
-    var centerX: AppViewXaxisAnchor {
-        return AppViewXaxisAnchor(origin: view.snp.centerX, view: view)
-    }
-
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    var centerSafeX: AppViewXaxisAnchor {
-        return AppViewXaxisAnchor(origin: view.safeAreaLayoutGuide.snp.centerX, view: view)
-    }
-}
 
 internal extension AutoLayoutViewDSL {
     
@@ -116,7 +36,7 @@ internal extension AutoLayoutViewDSL {
     func verify(at index: AutoLayoutConstraints.Attribute,
                 from anchor: AppViewConstraintAnchor? = nil,
                 extra: AutoLayoutExtraValue,
-                inSafe: Bool = false) -> (item: ConstraintItem, extra: AutoLayoutExtraValue)?
+                inSafe: Bool = false) -> (anchor: AppViewConstraintAnchor, extra: AutoLayoutExtraValue)?
     {
         
         guard let anchor = anchor ?? superAnchor(at: index, inSafe: inSafe) else { return nil }
@@ -128,48 +48,65 @@ internal extension AutoLayoutViewDSL {
             return nil
         }
         
-        // 视图未添加任何约束
-        if view.constraint == nil {
-            view.constraint = AppViewConstraint()
-        }
-        
         // 更新视图储存的约束值
-        guard let res = view.constraint!.update(at: index, anchor: anchor, extra: extra, isSuper: view.superview == anchor.view) else {
+        guard let res = constraint.update(at: index, anchor: anchor, extra: extra, isSuper: view.superview == anchor.view) else {
             // 无需进行布局
             return nil
         }
         
         // 返回布局信息
-        return (res.item, .comb(res.restrict, extra.raw.val))
+        return (res.anchor, .comb(res.restrict, extra.raw.val))
     }
 
     @discardableResult
-    func multipliedBy(_ target: ConstraintRelatableTarget,
+    func multipliedBy<T>(_ target: T,
                       for index: AutoLayoutConstraints.Attribute,
                       extra: AutoLayoutExtraValue) -> Self
     {
-        return constraintsMaker(target: target, extra.raw.restrict, for: index) { last in
-            last.multipliedBy(extra.raw.val)
+        #if canImport(SnapKit)
+        if let val = target as? CGFloat {
+            return constraintsMaker(target: val, extra.raw.restrict, for: index) { last in
+                last.multipliedBy(extra.raw.val)
+            }
         }
+        if let anchor = target as? AppViewConstraintAnchor {
+            return constraintsMaker(target: anchor.origin, extra.raw.restrict, for: index) { last in
+                last.multipliedBy(extra.raw.val)
+            }
+        }
+        #endif
+        return self
     }
 
     @discardableResult
-    func offsetBy(_ target: ConstraintRelatableTarget,
+    func offsetBy<T>(_ target: T,
                   for index: AutoLayoutConstraints.Attribute,
                   extra: AutoLayoutExtraValue) -> Self
     {
-        return constraintsMaker(target: target, extra.raw.restrict, for: index) { last in
-            last.offset(extra.raw.val)
+        #if canImport(SnapKit)
+        if let val = target as? CGFloat {
+            return constraintsMaker(target: val, extra.raw.restrict, for: index) { last in
+                last.offset(extra.raw.val)
+            }
         }
+        if let anchor = target as? AppViewConstraintAnchor {
+            return constraintsMaker(target: anchor.origin, extra.raw.restrict, for: index) { last in
+                last.offset(extra.raw.val)
+            }
+        }
+        #endif
+        return self
     }
 }
 
-
-
+#if canImport(SnapKit)
+import SnapKit
+#endif
 private extension AutoLayoutViewDSL {
     
     typealias Attribute = AutoLayoutConstraints.Attribute
     
+    #if canImport(SnapKit)
     func constraintsMaker(target: ConstraintRelatableTarget,
                           _ constraint: AutoLayoutConstraints,
                           for index: Attribute,
@@ -221,8 +158,13 @@ private extension AutoLayoutViewDSL {
             return maker.width
         case .height:
             return maker.height
+        case .firstBaseline:
+            return maker.firstBaseline
+        case .lastBaseline:
+            return maker.lastBaseline
         }
     }
+    #endif
     
     func superAnchor(at index: Attribute, inSafe: Bool) -> AppViewConstraintAnchor? {
         switch index {
@@ -274,6 +216,18 @@ private extension AutoLayoutViewDSL {
             } else {
                 return view.superview?.lyt.height
             }
+        case .firstBaseline:
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.firstBaseline
+            } else {
+                return view.superview?.lyt.firstBaseline
+            }
+        case .lastBaseline:
+            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+                return view.superview?.lyt.lastBaseline
+            } else {
+                return view.superview?.lyt.lastBaseline
+            }
         }
     }
 }
@@ -281,26 +235,19 @@ private extension AutoLayoutViewDSL {
 // MARK: Associated
 internal extension AppView {
     private struct OBJCKEY {
-        static var CONSTRAINT: Void?
         static var DSL: Void?
     }
-    var constraint: AppViewConstraint? {
+    var layoutDSL: AutoLayoutViewDSL? {
         get {
-            objc_getAssociatedObject(self, &OBJCKEY.CONSTRAINT) as? AppViewConstraint
+            guard let dsl = objc_getAssociatedObject(self, &OBJCKEY.DSL) as? AutoLayoutViewDSL else {
+                let res = AutoLayoutViewDSL(view: self)
+                objc_setAssociatedObject(self, &OBJCKEY.DSL, res, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                return res
+            }
+            return dsl
         }
         set {
-            objc_setAssociatedObject(self, &OBJCKEY.CONSTRAINT, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &OBJCKEY.DSL, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
-    }
-    
-    var layoutDSL: AutoLayoutViewDSL {
-        guard let dsl = objc_getAssociatedObject(self, &OBJCKEY.DSL) as? AutoLayoutViewDSL else {
-            let res = AutoLayoutViewDSL(view: self)
-            objc_setAssociatedObject(self, &OBJCKEY.DSL, res, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            return res
-        }
-        return dsl
     }
 }
-
-#endif

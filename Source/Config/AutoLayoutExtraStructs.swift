@@ -1,13 +1,13 @@
 //
 //  AutoLayoutExtraStructs.swift
-//  AutoLayout-SnapKit
+//  AutoLayout
 //
-//  Created by 承轩 on 2023/9/19.
+//  Created by jian on 2023/9/19.
 //
 
 //import Foundation
 
-public struct SnapEdgeInsets {
+public struct EdgeInsets {
     
     public var top: CGFloat
     public var left: CGFloat
@@ -29,70 +29,70 @@ public struct SnapEdgeInsets {
         self.right = right
     }
     
-    public init(_ edge: SnapRectEdge, _ len: CGFloat) {
+    public init(_ edge: RectEdge, _ len: CGFloat) {
         self.top = edge.contains(.top) ? len : 0.0
         self.bottom = edge.contains(.bottom) ? len : 0.0
         self.left = edge.contains(.left) ? len : 0.0
         self.right = edge.contains(.right) ? len : 0.0
     }
 
-    public static func insets(horz: CGFloat, vert: CGFloat) -> SnapEdgeInsets {
+    public static func insets(horz: CGFloat, vert: CGFloat) -> EdgeInsets {
         return .init(top: vert, left: horz, bottom: vert, right: horz)
     }
     
-    public static func insets(_ len: CGFloat = 0.0) -> SnapEdgeInsets {
+    public static func insets(_ len: CGFloat = 0.0) -> EdgeInsets {
         return .init(top: len, left: len, bottom: len, right: len)
     }
 
-    public static func insets(top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) -> SnapEdgeInsets {
+    public static func insets(top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) -> EdgeInsets {
         return .init(top: top, left: left, bottom: bottom, right: right)
     }
     
-    public static func insets(_ edge: SnapRectEdge, _ len: CGFloat) -> SnapEdgeInsets {
+    public static func insets(_ edge: RectEdge, _ len: CGFloat) -> EdgeInsets {
         return .init(edge, len)
     }
 }
 
-public struct SnapRectEdge : OptionSet {
+public struct RectEdge : OptionSet {
     public var rawValue: UInt
 
     public init(rawValue: UInt) {
         self.rawValue = rawValue
     }
-    public static var top: SnapRectEdge { SnapRectEdge(rawValue: 1 << 0) }
+    public static var top: RectEdge { RectEdge(rawValue: 1 << 0) }
 
-    public static var left: SnapRectEdge { SnapRectEdge(rawValue: 1 << 1) }
+    public static var left: RectEdge { RectEdge(rawValue: 1 << 1) }
 
-    public static var bottom: SnapRectEdge { SnapRectEdge(rawValue: 1 << 2) }
+    public static var bottom: RectEdge { RectEdge(rawValue: 1 << 2) }
 
-    public static var right: SnapRectEdge { SnapRectEdge(rawValue: 1 << 3) }
+    public static var right: RectEdge { RectEdge(rawValue: 1 << 3) }
 
-    public static var all: SnapRectEdge { SnapRectEdge(rawValue: 15) }
+    public static var all: RectEdge { RectEdge(rawValue: 15) }
 }
 
-public extension SnapRectEdge {
+public extension RectEdge {
     
-    static var untop: SnapRectEdge {
+    static var untop: RectEdge {
         get { [.left, .bottom, .right] }
     }
     
-    static var unleft: SnapRectEdge {
+    static var unleft: RectEdge {
         get { [.top, .bottom, .right] }
     }
     
-    static var unbottom: SnapRectEdge {
+    static var unbottom: RectEdge {
         get { [.top, .left, .right] }
     }
     
-    static var unright: SnapRectEdge {
+    static var unright: RectEdge {
         get { [.top, .left, .bottom] }
     }
     
-    static var horz: SnapRectEdge {
+    static var horz: RectEdge {
         get { [.left, .right] }
     }
     
-    static var vert: SnapRectEdge {
+    static var vert: RectEdge {
         get { [.top, .bottom] }
     }
 }

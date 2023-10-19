@@ -1,35 +1,34 @@
 //
 //  SnapKit+ArrSize.swift
-//  AutoLayout-SnapKit
+//  AutoLayout
 //
-//  Created by 承轩 on 2023/8/10.
+//  Created by jian on 2023/8/10.
 //
 
-#if canImport(SnapKit)
 
 public extension AppViewsArrayDSL {
-    /// 【SnapKit:  width】
+    /// 【 width】
     @discardableResult
     func width(_ width: CGFloat) -> Self {
         array.forEach { $0.lyt.width(width) }
         return self
     }
 
-    /// 【SnapKit:  width】
+    /// 【 width】
     @discardableResult
     func width(_ width: AutoLayoutExtraValue) -> Self {
         array.forEach { $0.lyt.width(width) }
         return self
     }
 
-    /// 【SnapKit: 将传入视图的width/height赋值给当前对象的 width】
+    /// 【将传入视图的width/height赋值给当前对象的 width】
     @discardableResult
     func width(by anchor: AppViewSizeAnchor?, mult: AutoLayoutExtraValue = .one) -> Self {
         array.forEach { $0.lyt.width(by: anchor, mult: mult) }
         return self
     }
 
-    /// 【SnapKit: 将传入视图的width/height赋值给当前对象的 width】
+    /// 【将传入视图的width/height赋值给当前对象的 width】
     @discardableResult
     func width(by view: AppView, mult: AutoLayoutExtraValue = .one) -> Self {
         array.forEach { $0.lyt.width(by: view, mult: mult) }
@@ -38,28 +37,28 @@ public extension AppViewsArrayDSL {
 }
 
 public extension AppViewsArrayDSL {
-    /// 【SnapKit: height】
+    /// 【height】
     @discardableResult
     func height(_ height: CGFloat) -> Self {
         array.forEach { $0.lyt.height(height) }
         return self
     }
 
-    /// 【SnapKit: height】
+    /// 【height】
     @discardableResult
     func height(_ height: AutoLayoutExtraValue) -> Self {
         array.forEach { $0.lyt.height(height) }
         return self
     }
 
-    /// 【SnapKit: 将传入视图的width/height赋值给当前对象的 height】
+    /// 【将传入视图的width/height赋值给当前对象的 height】
     @discardableResult
     func height(by anchor: AppViewSizeAnchor?, mult: AutoLayoutExtraValue = .one) -> Self {
         array.forEach { $0.lyt.height(by: anchor, mult: mult) }
         return self
     }
 
-    /// 【SnapKit: 将传入视图的width/height赋值给当前对象的 height】
+    /// 【将传入视图的width/height赋值给当前对象的 height】
     @discardableResult
     func height(by view: AppView, mult: AutoLayoutExtraValue = .one) -> Self {
         array.forEach { $0.lyt.height(by: view, mult: mult) }
@@ -69,31 +68,37 @@ public extension AppViewsArrayDSL {
 
 public extension AppViewsArrayDSL {
     
-    /// 【SnapKit: 平分父视图的width】
+    /// 【平分父视图的width】
     /// - Parameters:
     ///   - space: 子视图间距
+    ///   - flex: 视图是否自动伸缩
     ///   - inset: 整体视图外边距
     @discardableResult
     func horzLayout(space: CGFloat = .offset,
-                    insets: SnapEdgeInsets = SnapEdgeInsets(10)) -> Self
+                    flex: Bool = false,
+                    insets: EdgeInsets = EdgeInsets(10)) -> Self
     {
         array.enumerated { v, emRef in
             let offset = emRef.isfirst ? insets.left : space
             v.lyt.vert(insets.top, insets.bottom)
             v.lyt.leading(by: emRef.refer?.lyt.trailing, offset: offset)
             if emRef.islast { v.lyt.trailing(insets.right) }
-            if let prev = emRef.refer { v.lyt.width(by: prev.lyt.width) }
+            if let prev = emRef.refer, !flex {
+                v.lyt.width(by: prev.lyt.width)
+            }
         }
         return self
     }
 
-    /// 【SnapKit: 平分父视图的height】
+    /// 【平分父视图的height】
     /// - Parameters:
     ///   - space: 子视图间距
+    ///   - flex: 视图是否自动伸缩
     ///   - inset: 整体视图外边距
     @discardableResult
     func vertLayout(space: CGFloat = .offset,
-                    insets: SnapEdgeInsets = SnapEdgeInsets(10)) -> Self
+                    flex: Bool = false,
+                    insets: EdgeInsets = EdgeInsets(10)) -> Self
     {
         array.enumerated { v, emrt in
             let offset = emrt.isfirst ? insets.top : space
@@ -102,14 +107,14 @@ public extension AppViewsArrayDSL {
             if emrt.islast {
                 v.lyt.bottom(insets.bottom)
             }
-            if let prev = emrt.refer {
+            if let prev = emrt.refer, !flex {
                 v.lyt.height(by: prev.lyt.height)
             }
         }
         return self
     }
 
-    /// 【SnapKit: 九宫格视图】
+    /// 【九宫格视图】
     /// - Parameters:
     ///   - colums: 布局多少列
     ///   - layout: 布局类型（相等，方形，内容适配）
@@ -118,21 +123,21 @@ public extension AppViewsArrayDSL {
     @discardableResult
     func gridLayout(colums: Int = 3,
                     layout: AutoLayoutGridExtraLayout = .equal,
-                    spaces: AutoLayoutGridExtraValue = .global,
-                    inset: SnapEdgeInsets = SnapEdgeInsets(10)) -> Self
+                    spaces: AutoLayoutGridExtraValue = .one,
+                    insets: EdgeInsets = EdgeInsets(10)) -> Self
     {
         array.enumeratedGrid(colums: colums) { v, prev, row, col in
             // rows
-            let rowOffset = row.isfirst ? inset.top : spaces.raw.row
+            let rowOffset = row.isfirst ? insets.top : spaces.raw.row
             v.lyt.top(by: row.refer?.lyt.bottom, offset: rowOffset)
             if row.islast {
-                v.lyt.bottom(inset.bottom)
+                v.lyt.bottom(insets.bottom)
             }
             // cols
-            let colOffset = col.isfirst ? inset.left : spaces.raw.col
+            let colOffset = col.isfirst ? insets.left : spaces.raw.col
             v.lyt.leading(by: col.refer?.lyt.trailing, offset: colOffset)
             if col.islast {
-                v.lyt.trailing(inset.right)
+                v.lyt.trailing(insets.right)
             }
 
             if let prev = prev {
@@ -217,4 +222,3 @@ private extension Array {
         return isSafe(at: index) ? self[index] : nil
     }
 }
-#endif

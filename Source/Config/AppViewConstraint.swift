@@ -1,12 +1,9 @@
 //
 //  AppViewConstraint.swift
-//  AutoLayout-SnapKit
+//  AutoLayout
 //
-//  Created by 承轩 on 2023/8/9.
+//  Created by jian on 2023/8/9.
 //
-
-#if canImport(SnapKit)
-import SnapKit
 
 internal final class AppViewConstraint {
     typealias Attribute = AutoLayoutConstraints.Attribute
@@ -21,7 +18,7 @@ internal final class AppViewConstraint {
     ///   - extra: 额外布局参数
     ///   - isSuper: 是否相对视图父视进行布局
     /// - Returns: 更新布局信息
-    func update(at index: Attribute, anchor: AppViewConstraintAnchor, extra: AutoLayoutExtraValue, isSuper: Bool) -> (restrict: AutoLayoutConstraints, item: ConstraintItem)? {
+    func update(at index: Attribute, anchor: AppViewConstraintAnchor, extra: AutoLayoutExtraValue, isSuper: Bool) -> (restrict: AutoLayoutConstraints, anchor: AppViewConstraintAnchor)? {
         
         // 未通过检测，约束冲突
         if !verify(at: index, isSuper: isSuper) {
@@ -35,7 +32,7 @@ internal final class AppViewConstraint {
         guard let snp = constraints[index] else {
             // 存储约束信息
             constraints[index] = LayoutItem(anchor: anchor, relation: relation, value: value)
-            return (.comb(.make, relation), anchor.origin)
+            return (.comb(.make, relation), anchor)
         }
         
         // 约束值未改变
@@ -52,7 +49,11 @@ internal final class AppViewConstraint {
             relation = snp.relation
         }
         // 返回布局配置
-        return (.comb(.update, relation), snp.anchor.origin)
+        return (.comb(.update, relation), snp.anchor)
+    }
+    
+    func removeAll() {
+        constraints.removeAll()
     }
 }
 
@@ -183,5 +184,3 @@ private extension Dictionary {
         return index(forKey: key) != nil
     }
 }
-
-#endif

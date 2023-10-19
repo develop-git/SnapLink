@@ -1,8 +1,8 @@
 //
 //  AutoLayoutExtraEnums.swift
-//  AutoLayout-SnapKit
+//  AutoLayout
 //
-//  Created by 承轩 on 2023/8/9.
+//  Created by jian on 2023/8/9.
 //
 
 public enum AutoLayoutGridExtraLayout: Int {
@@ -10,25 +10,21 @@ public enum AutoLayoutGridExtraLayout: Int {
 }
 
 public enum AutoLayoutGridExtraValue {
-    case non   // spaces = 0.0
+    
     case one    // spaces = 1.0
-    case global // spaces = 10.0
+
     case vals(_ value: CGFloat) // spaces = value
     case row(_ value: CGFloat)  // rowSpace = value, colSpace = 0.0
     case col(_ value: CGFloat)  // rowSpace = 0.0, colSpace = value
     case diff(_ row: CGFloat, _ col: CGFloat) // rowSpace = row, colSpace = col
     
     var raw: (row: CGFloat, col: CGFloat) {
-        let global: CGFloat = 10.0, zero: CGFloat = 0.0, one: CGFloat = 1.0
+        let zero: CGFloat = 0.0, one: CGFloat = 1.0
         switch self {
         case .diff(let row, let col):
             return (row, col)
-        case .non:
-            return (zero, zero)
         case .one:
             return (one, one)
-        case .global:
-            return (global, global)
         case .vals(let val):
             return (val, val)
         case .row(let row):
@@ -43,58 +39,39 @@ public enum AutoLayoutExtraValue {
     //(offset\mult\width\height)
     
     /// Equal
-    case global // = 10.0
-    case non    // = 0.0
     case halfone   // = 0.5
     case one    // = 1.0
     
-    case equal(_ value: CGFloat) // = value
+    case eq(_ value: CGFloat) // = value
     
-    case minGlobal  // >= 10.0
-    case minHalfone    // >= 0.5
-    case minZero    // >= 0.0
+    case minzero    // >= 0.0
     case min(_ value: CGFloat) // >= value
     
-    case maxGlobal  // <= 10.0
-    case maxHalfone    // <= 0.5
-    case maxZero    // <= 0.0
+    case maxzero    // <= 0.0
     case max(_ value: CGFloat) // <= value
     
     case comb(AutoLayoutConstraints, CGFloat)
     
     typealias Relation = AutoLayoutConstraints.Relation
     var raw: (val: CGFloat, restrict: AutoLayoutConstraints) {
-        let global: CGFloat = 10.0, zero: CGFloat = 0.0, one: CGFloat = 1.0, halfone: CGFloat = 0.5
+        let zero: CGFloat = 0.0, one: CGFloat = 1.0, halfone: CGFloat = 0.5
         switch self {
-        /// Equal
-        case .global:
-            return (global, Relation.equal.constraints)
-        case .non:
-            return (zero, Relation.equal.constraints)
         case .halfone:
             return (halfone, Relation.equal.constraints)
         case .one:
             return (one, Relation.equal.constraints)
-        case .equal(let val):
+        case .eq(let val):
             return (val, Relation.equal.constraints)
             
         /// Min
-        case .minGlobal:
-            return (global, Relation.min.constraints)
-        case .minZero:
+        case .minzero:
             return (zero, Relation.min.constraints)
-        case .minHalfone:
-            return (halfone, Relation.min.constraints)
         case .min(let val):
             return (val, Relation.min.constraints)
             
         /// Max
-        case .maxGlobal:
-            return (global, Relation.max.constraints)
-        case .maxZero:
+        case .maxzero:
             return (zero, Relation.max.constraints)
-        case .maxHalfone:
-            return (halfone, Relation.max.constraints)
         case .max(let val):
             return (val, Relation.max.constraints)
             
@@ -112,18 +89,18 @@ public enum AutoLayoutCompoundOffsetValue<T> {
     
     case bySuper        // offset = 0.0
     
-    case byOffset(_ offset: AutoLayoutExtraValue)
+    case offset(_ offset: AutoLayoutExtraValue)
     
-    case by(_ item: T?, offset: AutoLayoutExtraValue = .global)
+    case by(_ item: T?, offset: AutoLayoutExtraValue = .eq(.offset))
     
     var raw: (item: T?, offset: AutoLayoutExtraValue) {
         switch self {
         case .by(let item, let offset):
             return (item, offset)
-        case .byOffset(let offset):
+        case .offset(let offset):
             return (nil, offset)
         default:
-            return (nil, .non)
+            return (nil, .eq(.zero))
         }
     }
 }
