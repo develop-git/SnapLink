@@ -39,7 +39,7 @@ it, simply add the following line to your Podfile:
 
 ```ruby
 
-pod 'AutoLayoutLink', '~> 1.3.0'
+pod 'AutoLayoutLink', '~> 1.3.1'
 
 ```
 
