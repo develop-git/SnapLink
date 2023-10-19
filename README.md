@@ -46,7 +46,7 @@ it, simply add the following line to your Podfile:
 
 ```ruby
 
-pod 'AutoLayout', '~> 1.2.0'
+pod 'AutoLayout', '~> 1.2.1'
 
 ```
 
