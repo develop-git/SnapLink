@@ -1,5 +1,3 @@
-#AutoLayoutLink
-
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
@@ -30,7 +28,7 @@ class ViewController: UIViewController {
 
 ## Requirements
 ```ruby
-iOS 10.0, macOS 10.12, tvOS 10.0
+iOS 10.0、 tvOS 10.0、macOS 10.12
 Swift 5.0
 ```
 
@@ -41,7 +39,7 @@ it, simply add the following line to your Podfile:
 
 ```ruby
 
-pod 'AutoLayout', '~> 1.3.0'
+pod 'AutoLayoutLink', '~> 1.3.0'
 
 ```
 

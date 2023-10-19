@@ -29,7 +29,8 @@ public extension AppView {
     /// 添加视图，并返回布局对象
     @discardableResult
     func layoutAv(_ view: AppView) -> AutoLayoutViewDSL {
-        if self != view { // 避免 lab.addSubview(lab) 情形
+        if self != view { 
+            // 避免 lab.addSubview(lab) 情形
             self.addSubview(view)
         }
         return view.lyt
