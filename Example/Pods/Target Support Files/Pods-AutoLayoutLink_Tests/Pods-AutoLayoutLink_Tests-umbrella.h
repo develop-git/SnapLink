@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_AutoLayout_ExampleVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_AutoLayout_ExampleVersionString[];
+FOUNDATION_EXPORT Float Pods_AutoLayoutLink_TestsVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_AutoLayoutLink_TestsVersionString[];
 

@@ -12,7 +12,7 @@ public extension AutoLayoutViewDSL {
     /// 【SnapKit：将传入的数值赋值给当前对象的 width & height】
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    func size(_ value: CGFloat) -> Self {
+    func size(_ value: AutoLayoutExtraValue) -> Self {
         return self.width(value)
             .height(value)
     }
@@ -21,14 +21,6 @@ public extension AutoLayoutViewDSL {
     func size(by anchor: AppViewSizeAnchor) -> Self {
         return self.width(by: anchor)
             .height(by: anchor)
-    }
-    
-    /// 【将传入的width & height 数值赋值给当前对象的 width & height】
-    /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
-    @discardableResult
-    func size(width: CGFloat, height: CGFloat) -> Self {
-        return self.width(width)
-            .height(height)
     }
     
     /// 【将传入的width & height 数值赋值给当前对象的 width & height】
@@ -54,7 +46,7 @@ public extension AutoLayoutViewDSL {
     }
     
     @discardableResult
-    func size(_ size: AutoLayoutCompoundMultiplierValue = .bySuper) -> Self
+    func size(_ size: AutoLayoutCompoundMultiplierValue = .fill) -> Self
     {
         return self.width(size)
             .height(size)
@@ -78,12 +70,6 @@ public extension AutoLayoutViewDSL {
 // MARK: width
 
 public extension AutoLayoutViewDSL {
-    /// 【 width】
-    @discardableResult
-    func width(_ width: CGFloat) -> Self {
-        guard let ret = verify(at: .width, extra: .one) else { return self }
-        return multipliedBy(width, for: .width, extra: ret.extra)
-    }
     
     /// 【 width】
     /// 若需要 width 动态变化，可设置为 .max\.min
@@ -96,7 +82,7 @@ public extension AutoLayoutViewDSL {
     /// 【 width】
     /// 若需要 width 动态变化，可设置为 .max\.min
     @discardableResult
-    func width(_ width: AutoLayoutCompoundMultiplierValue = .bySuper) -> Self {
+    func width(_ width: AutoLayoutCompoundMultiplierValue = .fill) -> Self {
         guard let ret = verify(at: .width, from: width.raw.item, extra: width.raw.mult, inSafe: false) else { return self }
         return multipliedBy(ret.anchor, for: .width, extra: ret.extra)
     }
@@ -104,28 +90,16 @@ public extension AutoLayoutViewDSL {
     /// 【将传入视图的width/height赋值给当前对象的 width】
     /// 若需要 width动态变化，可设置 mult (multiplier)为 .max\.min
     @discardableResult
-    func width(by anchor: AppViewSizeAnchor?, mult: AutoLayoutExtraValue) -> Self {
+    func width(by anchor: AppViewSizeAnchor?, mult: AutoLayoutExtraValue = .one) -> Self {
         guard let ret = verify(at: .width, from: anchor, extra: mult) else { return self }
-        return multipliedBy(ret.anchor, for: .width, extra: ret.extra)
-    }
-    
-    @discardableResult
-    func width(by anchor: AppViewSizeAnchor?, mult: CGFloat = 1.0) -> Self {
-        guard let ret = verify(at: .width, from: anchor, extra: .eq(mult)) else { return self }
         return multipliedBy(ret.anchor, for: .width, extra: ret.extra)
     }
     
     /// 【将传入视图的width赋值给当前对象的 width】
     /// 若需要 width 动态变化，可设置 mult (multiplier)为 .max\.min
     @discardableResult
-    func width(by view: AppView, mult: AutoLayoutExtraValue) -> Self {
+    func width(by view: AppView, mult: AutoLayoutExtraValue = .one) -> Self {
         guard let ret = verify(at: .width, from: view.lyt.width, extra: mult) else { return self }
-        return multipliedBy(ret.anchor, for: .width, extra: ret.extra)
-    }
-    
-    @discardableResult
-    func width(by view: AppView, mult: CGFloat = 1.0) -> Self {
-        guard let ret = verify(at: .width, from: view.lyt.width, extra: .eq(mult)) else { return self }
         return multipliedBy(ret.anchor, for: .width, extra: ret.extra)
     }
 }
@@ -133,12 +107,6 @@ public extension AutoLayoutViewDSL {
 // MARK: height
 
 public extension AutoLayoutViewDSL {
-    /// 【height】
-    @discardableResult
-    func height(_ height: CGFloat) -> Self {
-        guard let ret = verify(at: .height, extra: .one) else { return self }
-        return multipliedBy(height, for: .height, extra: ret.extra)
-    }
     
     /// 【height】
     /// 若需要 height 动态变化，可设置为 .max\.min
@@ -151,7 +119,7 @@ public extension AutoLayoutViewDSL {
     /// 【height】
     /// 若需要 height 动态变化，可设置为 .max\.min
     @discardableResult
-    func height(_ height: AutoLayoutCompoundMultiplierValue = .bySuper) -> Self {
+    func height(_ height: AutoLayoutCompoundMultiplierValue = .fill) -> Self {
         guard let ret = verify(at: .height, from: height.raw.item, extra: height.raw.mult, inSafe: false) else { return self }
         return multipliedBy(ret.anchor, for: .height, extra: ret.extra)
     }
@@ -159,28 +127,16 @@ public extension AutoLayoutViewDSL {
     /// 【将传入视图的width/height赋值给当前对象的 height】
     /// 若需要 height 动态变化，可设置 mult (multiplier)为 .max\.min
     @discardableResult
-    func height(by anchor: AppViewSizeAnchor?, mult: AutoLayoutExtraValue) -> Self {
+    func height(by anchor: AppViewSizeAnchor?, mult: AutoLayoutExtraValue = .one) -> Self {
         guard let ret = verify(at: .height, from: anchor, extra: mult) else { return self }
-        return multipliedBy(ret.anchor, for: .height, extra: ret.extra)
-    }
-    
-    @discardableResult
-    func height(by anchor: AppViewSizeAnchor?, mult: CGFloat = 1.0) -> Self {
-        guard let ret = verify(at: .height, from: anchor, extra: .eq(mult)) else { return self }
         return multipliedBy(ret.anchor, for: .height, extra: ret.extra)
     }
     
     /// 【将传入视图的height赋值给当前对象的 height】
     /// 若需要 height 动态变化，可设置 mult (multiplier)为 .max\.min
     @discardableResult
-    func height(by view: AppView, mult: AutoLayoutExtraValue) -> Self {
+    func height(by view: AppView, mult: AutoLayoutExtraValue = .one) -> Self {
         guard let ret = verify(at: .height, from: view.lyt.height, extra: mult) else { return self }
-        return multipliedBy(ret.anchor, for: .height, extra: ret.extra)
-    }
-    
-    @discardableResult
-    func height(by view: AppView, mult: CGFloat = 1.0) -> Self {
-        guard let ret = verify(at: .height, from: view.lyt.height, extra: .eq(mult)) else { return self }
         return multipliedBy(ret.anchor, for: .height, extra: ret.extra)
     }
 }

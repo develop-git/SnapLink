@@ -14,35 +14,33 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     
         /** 等价关系
-         view.layoutAv(lab)
+         lab.layoutIn(view)
             ||
          view.addSubview(lab)
          lab.lyt
          */
-        let temp = UIView()
-        temp.backgroundColor = .cyan
-        view.layoutAv(temp)
-            .size(200)
-            .center()
-        
-        let lab = UILabel()
-        lab.backgroundColor = .red
-        lab.text = "测试label"
-        temp.layoutAv(lab)
-            .top()
-            .horz()
         
         // 使用案例
-//        topExample()
-//        bottomExample()
+        // MARK: 顶部偏移
+        topExample()
+        // MARK: 底部偏移
+        bottomExample()
+        // MARK: leading
 //        leadingExample()
+        // MARK: trailing
 //        trailingExample()
+        // MARK: 外边距margin<->fill
 //        marginsExample()
 //        fillExample()
+        // MARK: 水平间距
 //        horizontalExample()
+        // MARK: 垂直边距
 //        verticalExample()
+        // MARK: 网格布局
 //        grid()
-//        divide()
+        // MARK: 线性布局
+//        linear()
+        test()
     }
 
     override func didReceiveMemoryWarning() {
@@ -59,9 +57,9 @@ extension ViewController {
         /// 更多使用方法，请修改参数试试
         let lab = UILabel()
         lab.backgroundColor = .green
-        view.layoutAv(lab)
-            .size(10) // size = 10
-            .size(.bySuper) // size = view.size
+        lab.layoutIn(view)
+            .size(10.0) // size = 10
+            .size(.fill) // size = view.size
             .size(by: view) // size = view.size
             .size(by: view.lyt.width) // size = view.width
     }
@@ -74,11 +72,12 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加顶部边距
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             .width(10) // width = 10
             .width(.max(30)) // width <= 30
             .width(.min(30)) // width >= 30
-            .width(.bySuper) // width = view.width
+            .width(.fill) // width = view.width
+            .width(.byMult(.halfone))
             .width(by: view) // width = view.width
             .width(by: view, mult: .max(0.5)) // width <= view.width * 0.5
             .width(by: view, mult: 0.5) // width = view.width * 0.5
@@ -92,11 +91,11 @@ extension ViewController {
         /// 更多使用方法，请修改参数试试
         let lab = UILabel()
         lab.backgroundColor = .green
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             .height(10) // height = 10
             .height(.max(30)) // height <= 30
             .height(.min(30)) // height >= 30
-            .height(.bySuper) // height = view.height
+            .height(.fill) // height = view.height
             .height(by: view) // height = view.height
             .height(by: view, mult: .max(0.5)) // height <= view.height * 0.5
             .height(by: view, mult: 0.5) // height = view.height * 0.5
@@ -112,11 +111,10 @@ extension ViewController {
         lab.backgroundColor = .green
         // lab 添加顶部边距
         view.addSubview(lab)
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             // 未添加安全区域
             // 相对父视图布局
             .top(10) // offset = 10
-            .top(.zero) // offset = 0
             .top(.offset(.one)) // offset = 1.0
             .top(.max(10)) // offset <= 10
             .top(.min(10)) // offset >= 10
@@ -125,7 +123,7 @@ extension ViewController {
             .top(by: view.lyt.top) // offset = 10
             .top(by: view.lyt.top, offset: .max(10)) // offset <= view.top + 10
             .top(by: view.lyt.top, offset: .min(10)) // offset >= view.top + 10
-            .top(.by(view.lyt.top, offset:.eq(.zero))) // offset = 0
+            .top(.by(view.lyt.top, offset:nil)) // offset = 0
         
             // 添加安全区域, 设置思路同上
             // 相对父视图布局
@@ -136,7 +134,7 @@ extension ViewController {
         
             .leadingTop(by: view, offset: 10)
             .trailing()
-            .height(100)
+            .height(.max(100))
     }
     
     // MARK: bottom
@@ -147,19 +145,17 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加底部部边距
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             // 未添加安全区域
             // 相对父视图布局
             .bottom(10) // offset = 10
-//            .bottom(.bySuper) // offset = 0
-//            .bottom(.offset(.one)) // offset = 1.0
             .bottom(.max(10)) // offset <= 10
             .bottom(.min(10)) // offset >= 10
             // 相对目标视图布局
             .bottom(by: view) // offset = 10
             .bottom(by: view.lyt.bottom) // offset = 10
-            .bottom(by: view.lyt.bottom, offset: .max(10)) // offset <= view.lyt.bottom + 10
-            .bottom(by: view.lyt.bottom, offset: .min(10)) // offset >= view.lyt.bottom + 10
+            .bottom(by: view.lyt.bottom, offset: .max(10)) // offset <= view.lyt.bottom - 10
+            .bottom(by: view.lyt.bottom, offset: .min(10)) // offset >= view.lyt.bottom - 10
             .bottom(.by(view.lyt.bottom)) // offset = 10
         
             // 添加安全区域, 设置思路同上
@@ -180,19 +176,19 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左侧边距
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             // 未添加安全区域
             // 相对父视图布局
             .leading(10) // offset = 10
-            .leading(.zero) // offset = 0
+//            .leading(.zero) // offset = 0
             .leading(.offset(.one)) // offset = 1.0
             .leading(.max(10)) // offset <= 10
             .leading(.min(10)) // offset >= 10
             // 相对目标视图布局
             .leading(by: view) // offset = 10
             .leading(by: view.lyt.leading) // offset = 10
-            .leading(by: view.lyt.leading, offset: .max(10)) // offset <= view.lyt.leading + 10
-            .leading(by: view.lyt.leading, offset: .min(10)) // offset >= view.lyt.leading + 10
+//            .leading(by: view.lyt.leading, offset: .max(10)) // offset <= view.lyt.leading + 10
+//            .leading(by: view.lyt.leading, offset: .min(10)) // offset >= view.lyt.leading + 10
             .leading(.by(view.lyt.leading)) // offset = 10
         
             // 添加安全区域, 设置思路同上
@@ -211,7 +207,7 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加右侧边距
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             // 未添加安全区域
             // 相对父视图布局
             .trailing(10) // offset = 10
@@ -222,8 +218,8 @@ extension ViewController {
             // 相对目标视图布局
             .trailing(by: view) // offset = 10
             .trailing(by: view.lyt.trailing) // offset = 10
-            .trailing(by: view.lyt.trailing, offset: .max(10)) // offset <= view.lyt.trailing + 10
-            .trailing(by: view.lyt.trailing, offset: .min(10)) // offset >= view.lyt.trailing + 10
+            .trailing(by: view.lyt.trailing, offset: .max(10)) // offset <= view.lyt.trailing - 10
+            .trailing(by: view.lyt.trailing, offset: .min(10)) // offset >= view.lyt.trailing - 10
             .trailing(.by(view.lyt.trailing)) // offset = 10
         
             // 添加安全区域, 设置思路同上
@@ -242,15 +238,13 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左右两侧侧边距
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             // 未添加安全区域
             // 相对父视图布局
             .horz(10) // offset = 10
-            .horz(.max(10)) // offset <= 10
-            .horz(.min(10)) // offset >= 10
             // 相对目标视图布局
             .horz(by: view) // offset = 10
-            .horz(.offset(.one), .offset(.max(10)))
+            .horzDynamic(.fixedStart)
         
             // 添加安全区域, 设置思路同上
             // 相对父视图布局
@@ -265,7 +259,7 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左右两侧侧边距
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             // 未添加安全区域
             // 相对父视图布局
             .vert(10) // offset = 10
@@ -285,12 +279,12 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左右两侧侧边距
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             // 未添加安全区域
             // 相对父视图布局
-            .margins(10) // offset = 10
+            .margins(.init(len: 10.3)) // offset = 10
             .margins(.horz, 10)
-            .margins(.insets(.top, 10))
+            .margins(.init(horz: 10, vert: 10))
     }
     
     // MARK: fill
@@ -301,14 +295,12 @@ extension ViewController {
         let lab = UILabel()
         lab.backgroundColor = .green
         // lab 添加左右两侧侧边距
-        view.layoutAv(lab)
+        lab.layoutIn(view)
             // 未添加安全区域
             // 相对父视图布局
             .fill() // offset = 10
-            .fill(inset: 10)
             // 添加安全区域
             .fillSafe()
-            .fillSafe(inset: 10)
     }
 }
 
@@ -316,96 +308,104 @@ extension ViewController {
     // MARK: 九宫格
 
     func grid() {
+        
         let temp = UIView()
         temp.backgroundColor = .cyan
-        view.layoutAv(temp)
+        temp.layoutIn(view)
             .horz()
-            .height(by: view, mult: 0.4)
-            .center()
-        
+            .height(by: view, mult: 0.8)
+//            .center()
+            .top()
+//            .top(.max(10))
+        let ds = ["第一个数据","第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长","第三个","最后一个数据，非常非常","第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长","第三个","最后一个数据，非常非常","第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长","第三个","最后一个数据，非常非常"]
         var labs: [UILabel] = []
-        (0...3).forEach { idx in
+        ds.forEach { idx in
             let lab = UILabel()
             lab.text = "\(idx)"
+            lab.numberOfLines = 0
             lab.backgroundColor = .red
             labs.append(lab)
         }
-        temp.layoutAv(labs)
+        labs.layoutIn(view)
             /// 九宫格布局
-            .gridLayout()
+            .gridLayout(layout: .equal, spaces: .diff(10, 5), insets: .init(len: 1.0))
     }
     
-    // MARK: 平分（垂直、水平）
+    // MARK: 线性布局（垂直、水平）
 
-    func divide() {
-        let scroll = UIScrollView()
-        scroll.backgroundColor = .yellow
-        view.layoutAv(scroll)
-            .fill()
+    func linear() {
+        
+        let base = UIView()
+        base.backgroundColor = .lightGray
+        base.layoutIn(view).size(.fill)
+            .bottomSafe(.max(10))
+       
         let temp = UIView()
         temp.backgroundColor = .cyan
-        scroll.layoutAv(temp)
-            .width(by: scroll)
-            .topSafe(.zero)
-            .bottomSafe(.maxzero)
-        
-        var labs: [UILabel] = []
-        for v in ["第一个数据","第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长","第三个","最后一个数据，非常非常"] {
-            let lab = UILabel()
-            lab.text = "\(v)"
-            lab.backgroundColor = .red
-            lab.numberOfLines = 0
-//            lab.textAlignment = .center
-            labs.append(lab)
+        temp.layoutIn(base)
+            .width(.fill)
+
+            .topSafe()
+            .bottomSafe()
+        let ds = ["第一个数据","第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长","第三个","最后一个数据，非常非常","第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长","第三个","最后一个数据，非常非常","第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长第二个数据，这个有点长","第三个","最后一个数据，非常非常"]
+        let labs: [UIView] = ds.map {
+            let lv = UIView()
+            lv.backgroundColor = .purple
+            
+            let lab1 = UILabel()
+            lab1.text = $0
+            lab1.backgroundColor = .red
+            lab1.numberOfLines = 0
+            
+            lab1.layoutIn(lv).fill()
+            return lv
         }
         
-        let lab1 = textlab("第一个")
-        let lab2 = textlab("第二个个发奥委会发恶怕我好发怕我拍发怕文峰怕我发")
-        let lab3 = textlab("第三个，发呵呵高文化高啊评委会怕我骗我后果怕我胡歌怕吴哥啊我拍个啊评委会副怕文峰和怕我会平分饿啊我好发和平阿婆温和副怕我")
-        lab3.font = .systemFont(ofSize: 20)
-        lab3.numberOfLines = 0
+        labs.layoutIn(temp)
+            .vertLayout(flex: false)
         
-        temp.layoutAv(lab1)
-            .top(50)
-            .size(100)
-            .leading()
-        
-        temp.layoutAv(lab3)
-            .height(250)
-            .leading(by: lab1.lyt.trailing)
-            .firstBaseline(by: lab1)
-            .trailing()
-        
-//        temp.addSubview(lab1)
-//        temp.addSubview(lab2)
-//        temp.addSubview(lab3)
-        
-//        lab1.snp.makeConstraints { make in
-//            make.top.equalTo(50)
-//            make.height.equalTo(100)
-//            make.leading.equalTo(temp.snp.leadingMargin)
-//            make.width.equalTo(100)
-//        }
-//        
-//        lab3.snp.makeConstraints { make in
-//            make.leading.equalTo(lab1.snp.trailingMargin).offset(10)
-//            make.firstBaseline.equalTo(lab1.snp.firstBaseline)
-//            make.trailing.equalTo(temp.snp.trailing)
-//            make.height.equalTo(250)
-//        }
-        
-//        temp.layoutAv(labs)
-//            /// 水平平分视图
-////            .horzLayout(flex: true)
-//        /// 垂直平分视图
-//            .vertLayout()
+        let lab = UILabel()
+        lab.text = "bottom"
+        lab.backgroundColor = .yellow
+        lab.layoutIn(base)
+            .top(by: temp.lyt.bottom, offset: 10)
+            .horz()
+            .height(40)
     }
     
     func textlab(_ text: String) -> UILabel {
         let lab1 = UILabel()
         lab1.text = text
         lab1.backgroundColor = .red
-        
+        lab1.numberOfLines = 0
         return lab1
+    }
+    
+    func test() {
+        let temp = UIView()
+        temp.backgroundColor = .cyan
+        temp.layoutIn(view)
+            // 不设置具体底部边距，则视图具有向下扩展的能力
+            .marginsSafe(.unbottom, 0)
+        
+        let lab1 = textlab("第一个文本数据，视图可压缩展示")
+        let lab2 = textlab("第二个文本数据，占据剩余所有空间，并具有动态增加特性")
+        
+        lab1.layoutIn(temp)
+            .width(.min(100))
+            .leading()
+            // 安全区域基础上再偏移10
+            .topSafe(10)
+            // 压缩视图
+            .compress()
+            .bottom(.max(10))
+        
+        lab2.layoutIn(temp)
+            .leading(by: lab1.lyt.trailing)
+            .trailing()
+            // 未叠加安全区域 偏移10
+            .top()
+            // 底部动态扩展，最大距离底部10（lab2相对于temp）
+            .bottom(.max(10))
     }
 }

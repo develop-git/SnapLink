@@ -7,11 +7,9 @@
 
 public struct AutoLayoutViewDSL {
     internal let view: AppView
-    private let responder: Controller?
     internal let constraint: AppViewConstraint
     internal init(view: AppView) {
         self.view = view
-        self.responder = view.viewController
         self.constraint = AppViewConstraint()
     }
 }
@@ -41,19 +39,20 @@ internal extension AutoLayoutViewDSL {
         
         guard let anchor = anchor ?? superAnchor(at: index, inSafe: inSafe) else { return nil }
         
-        // 布局视图未添加到父视图，不进行布局
-        // 目标视图未添加到父视图，或目标视图非布局视图的父视图，不进行布局
-        // 布局视图和目标视图不在同一控制器上
-        if self.responder == nil || anchor.view.lyt.responder == nil || self.responder != anchor.view.lyt.responder {
+        // 未添加到父视图
+        guard let superView = view.superview else { return nil }
+        
+        let isSuper = superView == anchor.view
+        
+        // 非同级视图
+        if !isSuper, anchor.view.superview == nil {
             return nil
         }
         
         // 更新视图储存的约束值
-        guard let res = constraint.update(at: index, anchor: anchor, extra: extra, isSuper: view.superview == anchor.view) else {
-            // 无需进行布局
+        guard let res = constraint.update(at: index, anchor: anchor, extra: extra, isSuper: isSuper) else {
             return nil
         }
-        
         // 返回布局信息
         return (res.anchor, .comb(res.restrict, extra.raw.val))
     }
@@ -63,18 +62,17 @@ internal extension AutoLayoutViewDSL {
                       for index: AutoLayoutConstraints.Attribute,
                       extra: AutoLayoutExtraValue) -> Self
     {
-        #if canImport(SnapKit)
-        if let val = target as? CGFloat {
-            return constraintsMaker(target: val, extra.raw.restrict, for: index) { last in
-                last.multipliedBy(extra.raw.val)
-            }
-        }
         if let anchor = target as? AppViewConstraintAnchor {
             return constraintsMaker(target: anchor.origin, extra.raw.restrict, for: index) { last in
                 last.multipliedBy(extra.raw.val)
             }
         }
-        #endif
+        
+        if let val = target as? ConstraintRelatableTarget {
+            return constraintsMaker(target: val, extra.raw.restrict, for: index) { last in
+                last.multipliedBy(extra.raw.val)
+            }
+        }
         return self
     }
 
@@ -83,30 +81,27 @@ internal extension AutoLayoutViewDSL {
                   for index: AutoLayoutConstraints.Attribute,
                   extra: AutoLayoutExtraValue) -> Self
     {
-        #if canImport(SnapKit)
-        if let val = target as? CGFloat {
-            return constraintsMaker(target: val, extra.raw.restrict, for: index) { last in
-                last.offset(extra.raw.val)
-            }
-        }
         if let anchor = target as? AppViewConstraintAnchor {
             return constraintsMaker(target: anchor.origin, extra.raw.restrict, for: index) { last in
                 last.offset(extra.raw.val)
             }
         }
-        #endif
+        if let val = target as? ConstraintRelatableTarget {
+            return constraintsMaker(target: val, extra.raw.restrict, for: index) { last in
+                last.offset(extra.raw.val)
+            }
+        }
         return self
     }
 }
 
-#if canImport(SnapKit)
+
 import SnapKit
-#endif
+
 private extension AutoLayoutViewDSL {
     
     typealias Attribute = AutoLayoutConstraints.Attribute
     
-    #if canImport(SnapKit)
     func constraintsMaker(target: ConstraintRelatableTarget,
                           _ constraint: AutoLayoutConstraints,
                           for index: Attribute,
@@ -115,11 +110,11 @@ private extension AutoLayoutViewDSL {
         switch constraint.raw.maker {
         case .make:
             view.snp.makeConstraints {
-                last(contraintsRelation(target, constraint, maker: layoutAnchor(at: index, maker: $0)))
+                last(contraintsRelation(target, constraint.raw.relation, maker: layoutAnchor(at: index, maker: $0)))
             }
         case .update:
             view.snp.updateConstraints {
-                last(contraintsRelation(target, constraint, maker: layoutAnchor(at: index, maker: $0)))
+                last(contraintsRelation(target, constraint.raw.relation, maker: layoutAnchor(at: index, maker: $0)))
             }
         }
         return self
@@ -127,10 +122,10 @@ private extension AutoLayoutViewDSL {
 
     @discardableResult
     func contraintsRelation(_ target: ConstraintRelatableTarget,
-                            _ constraint: AutoLayoutConstraints,
+                            _ relation: AutoLayoutConstraints.Relation,
                             maker: ConstraintMakerExtendable) -> ConstraintMakerEditable
     {
-        switch constraint.raw.relation {
+        switch relation {
         case .equal:
             return maker.equalTo(target)
         case .min:
@@ -164,66 +159,65 @@ private extension AutoLayoutViewDSL {
             return maker.lastBaseline
         }
     }
-    #endif
     
     func superAnchor(at index: Attribute, inSafe: Bool) -> AppViewConstraintAnchor? {
         switch index {
         case .leading:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.leadingSafe
             } else {
                 return view.superview?.lyt.leading
             }
         case .trailing:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.trailingSafe
             } else {
                 return view.superview?.lyt.trailing
             }
         case .centerX:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.centerSafeX
             } else {
                 return view.superview?.lyt.centerX
             }
         case .top:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.topSafe
             } else {
                 return view.superview?.lyt.top
             }
         case .bottom:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.bottomSafe
             } else {
                 return view.superview?.lyt.bottom
             }
         case .centerY:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.centerSafeY
             } else {
                 return view.superview?.lyt.centerY
             }
         case .width:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.widthSafe
             } else {
                 return view.superview?.lyt.width
             }
         case .height:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.heightSafe
             } else {
                 return view.superview?.lyt.height
             }
         case .firstBaseline:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.firstBaseline
             } else {
                 return view.superview?.lyt.firstBaseline
             }
         case .lastBaseline:
-            if #available(iOS 11.0, macOS 11.0, tvOS 11.0, *), inSafe {
+            if inSafe, #available(iOS 11.0, macOS 11.0, tvOS 11.0, *) {
                 return view.superview?.lyt.lastBaseline
             } else {
                 return view.superview?.lyt.lastBaseline

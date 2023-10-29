@@ -96,9 +96,8 @@ private extension AppViewConstraint {
             #if DEBUG
             debugPrint("""
                  约束冲突：视图已经设置width，不能再同时设置leading和trailing。
-                 解决方法列表:
-                 1.使用.min()/.max()设置动态宽度;
-                 2.移除.leading/.trailing其中之一。
+                 解决方法1: 使用.min()/.max()设置动态宽度;
+                 解决方法2: 移除.leading/.trailing其中之一。
                  """)
             #endif
             return false
@@ -111,9 +110,8 @@ private extension AppViewConstraint {
             #if DEBUG
             debugPrint("""
                 约束冲突：视图已经设置width与centerX, 不能再设置leading或trailing。
-                解决方法列表:
-                1.使用.min()/.max()设置动态宽度;
-                2.移除.centerX或.leading/.trailing。
+                解决方法1: 使用.min()/.max()设置动态宽度;
+                解决方法2: 移除.centerX或.leading/.trailing。
                 """)
             #endif
             return false
@@ -140,9 +138,8 @@ private extension AppViewConstraint {
         #if DEBUG
             debugPrint("""
                 约束冲突：视图已经设置height, 不能再同时设置top和bottom。
-                解决方法列表:
-                1.使用.min()/.max()设置动态高度;
-                2.移除.top/.bottom其中之一。
+                解决方法1: 使用.min()/.max()设置动态高度;
+                解决方法2: 移除.top/.bottom其中之一。
                 """)
             #endif
             return false
@@ -154,9 +151,8 @@ private extension AppViewConstraint {
             #if DEBUG
             debugPrint("""
                 约束冲突：视图已经设置height与centerY, 不能再设置top或bottom。
-                解决方法列表:
-                1.使用.min()/.max()设置动态高度;
-                2.移除.centerY或.top/.bottom。
+                解决方法1: 使用.min()/.max()设置动态高度;
+                解决方法2: 移除.centerY或.top/.bottom。
                 """)
             #endif
             return false
@@ -168,10 +164,10 @@ private extension AppViewConstraint {
 private final class LayoutItem {
     typealias Relation = AutoLayoutConstraints.Relation
     var relation: Relation
-    var value: CGFloat
+    var value: Float
     var anchor: AppViewConstraintAnchor
     
-    init(anchor: AppViewConstraintAnchor, relation: Relation, value: CGFloat) {
+    init(anchor: AppViewConstraintAnchor, relation: Relation, value: Float) {
         self.relation = relation
         self.value = value
         self.anchor = anchor

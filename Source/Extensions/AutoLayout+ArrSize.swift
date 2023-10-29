@@ -7,12 +7,6 @@
 
 
 public extension AppViewsArrayDSL {
-    /// 【 width】
-    @discardableResult
-    func width(_ width: CGFloat) -> Self {
-        array.forEach { $0.lyt.width(width) }
-        return self
-    }
 
     /// 【 width】
     @discardableResult
@@ -37,12 +31,6 @@ public extension AppViewsArrayDSL {
 }
 
 public extension AppViewsArrayDSL {
-    /// 【height】
-    @discardableResult
-    func height(_ height: CGFloat) -> Self {
-        array.forEach { $0.lyt.height(height) }
-        return self
-    }
 
     /// 【height】
     @discardableResult
@@ -68,21 +56,24 @@ public extension AppViewsArrayDSL {
 
 public extension AppViewsArrayDSL {
     
-    /// 【平分父视图的width】
+    /// 【水平布局】
+    /// 同时调用 horzLayout 和 vertLayout 方法会造成约束冲突，此种情形应采用 grid 方法做网格布局
     /// - Parameters:
     ///   - space: 子视图间距
     ///   - flex: 视图是否自动伸缩
     ///   - inset: 整体视图外边距
     @discardableResult
-    func horzLayout(space: CGFloat = .offset,
+    func horzLayout(space: Float = .offset,
                     flex: Bool = false,
-                    insets: EdgeInsets = EdgeInsets(10)) -> Self
+                    insets: AutoLayoutViewDSL.EdgeInsets = .init(len: .offset)) -> Self
     {
         array.enumerated { v, emRef in
             let offset = emRef.isfirst ? insets.left : space
-            v.lyt.vert(insets.top, insets.bottom)
-            v.lyt.leading(by: emRef.refer?.lyt.trailing, offset: offset)
-            if emRef.islast { v.lyt.trailing(insets.right) }
+            v.lyt.vert(insets.top.alv, insets.bottom.alv)
+            v.lyt.leading(by: emRef.refer?.lyt.trailing, offset: offset.alv)
+            if emRef.islast {
+                v.lyt.trailing(.max(insets.right))
+            }
             if let prev = emRef.refer, !flex {
                 v.lyt.width(by: prev.lyt.width)
             }
@@ -90,22 +81,23 @@ public extension AppViewsArrayDSL {
         return self
     }
 
-    /// 【平分父视图的height】
+    /// 【垂直布局】
+    /// 同时调用 horzLayout 和 vertLayout 方法会造成约束冲突，此种情形应采用 grid 方法做网格布局
     /// - Parameters:
     ///   - space: 子视图间距
     ///   - flex: 视图是否自动伸缩
     ///   - inset: 整体视图外边距
     @discardableResult
-    func vertLayout(space: CGFloat = .offset,
+    func vertLayout(space: Float = .offset,
                     flex: Bool = false,
-                    insets: EdgeInsets = EdgeInsets(10)) -> Self
+                    insets: AutoLayoutViewDSL.EdgeInsets = .init(len: .offset)) -> Self
     {
         array.enumerated { v, emrt in
             let offset = emrt.isfirst ? insets.top : space
-            v.lyt.horz(insets.left, insets.right)
-            v.lyt.top(by: emrt.refer?.lyt.bottom, offset: offset)
+            v.lyt.horz(insets.left.alv, insets.right.alv)
+            v.lyt.top(by: emrt.refer?.lyt.bottom, offset: offset.alv)
             if emrt.islast {
-                v.lyt.bottom(insets.bottom)
+                v.lyt.bottom(.max(insets.bottom))
             }
             if let prev = emrt.refer, !flex {
                 v.lyt.height(by: prev.lyt.height)
@@ -114,7 +106,7 @@ public extension AppViewsArrayDSL {
         return self
     }
 
-    /// 【九宫格视图】
+    /// 【网格视图】
     /// - Parameters:
     ///   - colums: 布局多少列
     ///   - layout: 布局类型（相等，方形，内容适配）
@@ -122,22 +114,23 @@ public extension AppViewsArrayDSL {
     ///   - inset: 布局外边距
     @discardableResult
     func gridLayout(colums: Int = 3,
-                    layout: AutoLayoutGridExtraLayout = .equal,
-                    spaces: AutoLayoutGridExtraValue = .one,
-                    insets: EdgeInsets = EdgeInsets(10)) -> Self
+                    layout: AutoLayoutGridLayout = .equal,
+                    spaces: AutoLayoutGridSpaces = .one,
+                    insets: AutoLayoutViewDSL.EdgeInsets = .init(len: 10)) -> Self
     {
         array.enumeratedGrid(colums: colums) { v, prev, row, col in
             // rows
-            let rowOffset = row.isfirst ? insets.top : spaces.raw.row
+            let rowOffset = row.isfirst ? insets.top.alv : spaces.raw.row
             v.lyt.top(by: row.refer?.lyt.bottom, offset: rowOffset)
-            if row.islast {
-                v.lyt.bottom(insets.bottom)
-            }
+            v.lyt.bottom(.max(insets.bottom))
+            
             // cols
-            let colOffset = col.isfirst ? insets.left : spaces.raw.col
+            let colOffset = col.isfirst ? insets.left.alv : spaces.raw.col
             v.lyt.leading(by: col.refer?.lyt.trailing, offset: colOffset)
             if col.islast {
-                v.lyt.trailing(insets.right)
+                v.lyt.trailing(insets.right.alv)
+            } else {
+                v.lyt.trailing(.max(insets.right))
             }
 
             if let prev = prev {
@@ -145,7 +138,7 @@ public extension AppViewsArrayDSL {
                 case .equal: v.lyt.size(by: prev)
                 case .square: v.lyt.size(by: prev.lyt.width)
                 case .flex: v.lyt.width(by: prev.lyt.width)
-                }
+               }
             }
         }
         // Fix first element size layout for square
@@ -191,8 +184,12 @@ private extension Array {
         guard count > 0 else { return }
         
         let arr = self
+        
         let colums = Swift.min(count, Swift.max(colums, 2))
+        let lastCol = colums - 1
+        
         let rows = count % colums == 0 ? count / colums : count / colums + 1
+        let lastRow = rows - 1
         
         var prev: Element?
         
@@ -200,9 +197,8 @@ private extension Array {
             
             let curRow = i / colums
             let curCol = i % colums
-            
-            let row = EnumeratedRefer(isfirst: curRow == 0, islast: curRow == rows - 1, refer: arr.at(i - colums))
-            let col = EnumeratedRefer(isfirst: curCol == 0, islast: curCol == colums - 1, refer: curCol == 0 ? nil : prev)
+            let row = EnumeratedRefer(isfirst: curRow == 0, islast: curRow == lastRow, refer: arr.at(i - colums))
+            let col = EnumeratedRefer(isfirst: curCol == 0, islast: curCol == lastCol, refer: curCol == 0 ? nil : prev)
             
             enumerate(e, prev, row, col)
             

@@ -7,15 +7,16 @@
 
 public enum AutoLayoutConstraints {
     case comb(Maker, Relation)
+    
     public enum Maker: Int {
-        case make, update
+        case make
+        case update
     }
 
     public enum Relation: Int {
-        case equal, min, max
-        var constraints: AutoLayoutConstraints {
-            return .comb(.make, self)
-        }
+        case equal
+        case min
+        case max
     }
 
     public enum Attribute: Int {
@@ -23,16 +24,24 @@ public enum AutoLayoutConstraints {
         case leading, trailing, centerX
         /// y-axis
         case top, bottom, centerY
-        ///
+        /// baseline
         case firstBaseline, lastBaseline
         /// size
         case width, height
     }
+}
 
+internal extension AutoLayoutConstraints {
     var raw: (maker: Maker, relation: Relation) {
         switch self {
         case .comb(let maker, let relation):
             return (maker, relation)
         }
+    }
+}
+
+internal extension AutoLayoutConstraints.Relation {
+    var constraints: AutoLayoutConstraints {
+        return .comb(.make, self)
     }
 }

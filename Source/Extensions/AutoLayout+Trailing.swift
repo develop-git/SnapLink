@@ -9,17 +9,11 @@
 // MARK: trailing
 
 public extension AutoLayoutViewDSL {
-    /// 【右边距，默认 10 】
-    @discardableResult
-    func trailing(_ offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .trailing, extra: .eq(-offset)) else { return self }
-        return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
-    }
     
     /// 【右边距，默认 10 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
-    func trailing(_ offset: AutoLayoutExtraValue) -> Self {
+    func trailing(_ offset: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         guard let ret = verify(at: .trailing, extra: offset.invertVal) else { return self }
         return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
     }
@@ -31,18 +25,10 @@ public extension AutoLayoutViewDSL {
     }
     
     /// 【右安全边距，默认 10 】
-    @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func trailingSafe(_ offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .trailing, extra: .eq(-offset), inSafe: true) else { return self }
-        return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
-    }
-    
-    /// 【右安全边距，默认 10 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func trailingSafe(_ offset: AutoLayoutExtraValue) -> Self {
+    func trailingSafe(_ offset: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         guard let ret = verify(at: .trailing, extra: offset.invertVal, inSafe: true) else { return self }
         return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
     }
@@ -50,72 +36,38 @@ public extension AutoLayoutViewDSL {
     /// 【右边距，默认 10 】
     /// 若需要动态修改，将offset值设置为 .max/.min
     @discardableResult
-    func trailing(by anchor: AppViewXaxisAnchor?, offset: AutoLayoutExtraValue) -> Self {
+    func trailing(by anchor: AppViewXaxisAnchor?, offset: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         guard let ret = verify(at: .trailing, from: anchor, extra: offset.invertVal) else { return self }
-        return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
-    }
-    
-    /// 【右边距，默认 10 】
-    /// 若需要动态修改，将offset值设置为 .max/.min
-    @discardableResult
-    func trailing(by anchor: AppViewXaxisAnchor?, offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .trailing, from: anchor, extra: .eq(-offset)) else { return self }
         return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
     }
     
     /// 【右边距】
     /// 若需要动态修改，将offset值设置为 .max/.min
     @discardableResult
-    func trailing(by view: AppView, offset: AutoLayoutExtraValue) -> Self {
+    func trailing(by view: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
         guard let ret = verify(at: .trailing, from: view.lyt.trailing, extra: offset.invertVal) else { return self }
         return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
     }
     
-    /// 【右边距，默认 0 】
-    /// 若需要动态修改，将offset值设置为 .max/.min
-    @discardableResult
-    func trailing(by view: AppView, offset: CGFloat = .zero) -> Self {
-        guard let ret = verify(at: .trailing, from: view.lyt.trailing, extra: .eq(-offset)) else { return self }
-        return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
-    }
-    
     /// 【右安全边距 】
     /// 若需要动态修改，将offset值设置为 .max/.min
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func trailingSafe(by anchor: AppViewXaxisAnchor?, offset: AutoLayoutExtraValue) -> Self {
+    func trailingSafe(by anchor: AppViewXaxisAnchor?, offset: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         guard let ret = verify(at: .trailing, from: anchor, extra: offset.invertVal, inSafe: true) else { return self }
         return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
     }
     
-    /// 【右安全边距，默认 10 】
-    /// 若需要动态修改，将offset值设置为 .max/.min
-    @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func trailingSafe(by anchor: AppViewXaxisAnchor?, offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .trailing, from: anchor, extra: .eq(-offset), inSafe: true) else { return self }
-        return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
-    }
-    
     /// 【右安全边距 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func trailingSafe(by view: AppView, offset: AutoLayoutExtraValue) -> Self {
+    func trailingSafe(by view: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
         guard let ret = verify(at: .trailing, from: view.lyt.trailingSafe, extra: offset.invertVal, inSafe: true) else { return self }
         return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
     }
     
-    /// 【右安全边距，默认 0 】
-    /// 若需要动态修改，将 offset 值设置为 .max/.min
-    @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func trailingSafe(by view: AppView, offset: CGFloat = .zero) -> Self {
-        guard let ret = verify(at: .trailing, from: view.lyt.trailingSafe, extra: .eq(-offset), inSafe: true) else { return self }
-        return offsetBy(ret.anchor, for: .trailing, extra: ret.extra)
-    }
-    
-    /// 【右中边距，默认 0 】
+    /// 【右中边距】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -134,7 +86,7 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    func trailingCenterY(by trailing: AppView, offset: AutoLayoutExtraValue = .eq(.zero)) -> Self {
+    func trailingCenterY(by trailing: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
         return self.trailing(by: trailing, offset: offset)
             .centerY(by: trailing)
     }
@@ -146,25 +98,32 @@ public extension AutoLayoutViewDSL {
     /// 【右上边距，默认 10 】
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    func trailingTop(_ value: CGFloat = .offset) -> Self {
+    func trailingTop(_ value: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         return self.trailing(value)
             .top(value)
     }
     
     @discardableResult
-    func trailingTop(by view: AppView, offset: CGFloat = 0) -> Self {
+    func trailingTop(by view: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
         return self.trailing(by: view, offset: offset)
             .top(by: view, offset: offset)
     }
     
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func trailingTopSafe(_ value: CGFloat = .offset) -> Self {
+    func trailingTopSafe(_ value: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         return self.trailingSafe(value)
             .topSafe(value)
     }
     
-    /// 【右上边距，默认 10 】
+    @discardableResult
+    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
+    func trailingTopSafe(by view: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
+        return self.trailingSafe(by: view, offset: offset)
+            .topSafe(by: view, offset: offset)
+    }
+    
+    /// 【右上边距 】
     /// 若需要 offset 动态变化，将值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -175,7 +134,7 @@ public extension AutoLayoutViewDSL {
             .top(top)
     }
     
-    /// 【右上边距，默认 10 】
+    /// 【右上边距 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -189,25 +148,32 @@ public extension AutoLayoutViewDSL {
     /// 【右下边距，默认 10 】
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    func trailingBottom(_ value: CGFloat = .offset) -> Self {
+    func trailingBottom(_ value: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         return self.trailing(value)
             .bottom(value)
     }
     
     @discardableResult
-    func trailingBottom(by view: AppView, offset: CGFloat = 0) -> Self {
+    func trailingBottom(by view: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
         return self.trailing(by: view, offset: offset)
             .bottom(by: view, offset: offset)
     }
     
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func trailingBottomSafe(_ value: CGFloat = .offset) -> Self {
+    func trailingBottomSafe(_ value: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         return self.trailingSafe(value)
             .bottomSafe(value)
     }
     
-    /// 【右下边距，默认 10 】
+    @discardableResult
+    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
+    func trailingBottomSafe(by view: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
+        return self.trailingSafe(by: view, offset: offset)
+            .bottomSafe(by: view, offset: offset)
+    }
+    
+    /// 【右下边距】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -218,7 +184,7 @@ public extension AutoLayoutViewDSL {
             .bottom(bottom)
     }
     
-    /// 【右下边距，默认 10 】
+    /// 【右下边距 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult

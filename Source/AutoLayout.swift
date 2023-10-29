@@ -28,23 +28,12 @@ public extension Array where Element: AppView {
 public extension AppView {
     /// 添加视图，并返回布局对象
     @discardableResult
-    func layoutAv(_ view: AppView) -> AutoLayoutViewDSL {
-        if self != view { 
+    func layoutIn(_ view: AppView) -> AutoLayoutViewDSL {
+        if self != view {
             // 避免 lab.addSubview(lab) 情形
-            self.addSubview(view)
+            view.addSubview(self)
         }
-        return view.lyt
-    }
-
-    /// 添加视图，并返回布局对象
-    @discardableResult
-    func layoutAv(_ views: [AppView]) -> AppViewsArrayDSL {
-        views.forEach { [weak self] view in
-            // 避免 lab.addSubview(lab) 情形
-            guard let self = self, self != view else { return }
-            self.addSubview(view)
-        }
-        return views.lyt
+        return self.lyt
     }
     
     /// 移除自动布局所有约束，先前设置的约束将不再生效
@@ -58,13 +47,33 @@ public extension AppView {
     }
 }
 
+public extension Array where Element : AppView {
+    /// 添加视图，并返回布局对象
+    @discardableResult
+    func layoutIn(_ view: AppView) -> AppViewsArrayDSL {
+        self.forEach { sub in
+            // 避免 lab.addSubview(lab) 情形
+            guard sub != view else { return }
+            view.addSubview(sub)
+        }
+        return self.lyt
+    }
+    
+    /// 清除约束
+    @discardableResult
+    func removeConstraints() -> Self {
+        self.forEach { $0.removeConstraints() }
+        return self
+    }
+}
+
 public extension AutoLayoutViewDSL {
     
     /// 是否在对应方向上进行压缩
     @discardableResult
-    func compress(_ compress: Bool, for axis: AppViewCompressPriority.CompressAxis = .horz) -> Self {
-        let priority: AppViewCompressPriority.Priority = compress ? .defaultLow : .defaultHigh
-        view.setContentCompressionResistancePriority(priority, for: AppViewCompressPriority.Axis(rawValue: axis.rawValue)!)
+    func compress(_ compress: Bool = true, for axis: AppViewCompressPriority.CompressAxis = .horz) -> Self {
+        let pr = AppViewCompressPriority.compress(compress, for: axis)
+        view.setContentCompressionResistancePriority(pr.raw.priority, for: pr.raw.axis)
         return self
     }
 
@@ -72,15 +81,6 @@ public extension AutoLayoutViewDSL {
     @discardableResult
     func priority(_ priority: AppViewCompressPriority) -> Self {
         view.setContentCompressionResistancePriority(priority.raw.priority, for: priority.raw.axis)
-        return self
-    }
-}
-
-public extension AppViewsArrayDSL {
-    /// 清除约束
-    @discardableResult
-    func removeConstraints() -> Self {
-        array.forEach { $0.removeConstraints() }
         return self
     }
 }

@@ -9,17 +9,11 @@
 // MARK: top
 
 public extension AutoLayoutViewDSL {
-    /// 【上边距，默认 10 】
-    @discardableResult
-    func top(_ offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .top, extra: .eq(offset)) else { return self }
-        return offsetBy(ret.anchor, for: .top, extra: ret.extra)
-    }
     
     /// 【上边距 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
-    func top(_ offset: AutoLayoutExtraValue) -> Self {
+    func top(_ offset: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         guard let ret = verify(at: .top, extra: offset) else { return self }
         return offsetBy(ret.anchor, for: .top, extra: ret.extra)
     }
@@ -32,19 +26,11 @@ public extension AutoLayoutViewDSL {
         return offsetBy(ret.anchor, for: .top, extra: ret.extra)
     }
     
-    /// 【上安全边距，默认 10 】
-    @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func topSafe(_ offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .top, extra: .eq(offset), inSafe: true) else { return self }
-        return offsetBy(ret.anchor, for: .top, extra: ret.extra)
-    }
-    
     /// 【上安全边距】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func topSafe(_ offset: AutoLayoutExtraValue) -> Self {
+    func topSafe(_ offset: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         guard let ret = verify(at: .top, extra: offset, inSafe: true) else { return self }
         return offsetBy(ret.anchor, for: .top, extra: ret.extra)
     }
@@ -52,30 +38,16 @@ public extension AutoLayoutViewDSL {
     /// 【上边距 】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
-    func top(by anchor: AppViewYaxisAnchor?, offset: AutoLayoutExtraValue) -> Self {
+    func top(by anchor: AppViewYaxisAnchor?, offset: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         guard let ret = verify(at: .top, from: anchor, extra: offset) else { return self }
-        return offsetBy(ret.anchor, for: .top, extra: ret.extra)
-    }
-    
-    /// 【上边距，默认 10 】
-    @discardableResult
-    func top(by anchor: AppViewYaxisAnchor?, offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .top, from: anchor, extra: .eq(offset)) else { return self }
         return offsetBy(ret.anchor, for: .top, extra: ret.extra)
     }
     
     /// 【以传入视图的视图顶部为起始点设置当前对象的边距值 上边距】
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
-    func top(by view: AppView, offset: AutoLayoutExtraValue) -> Self {
+    func top(by view: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
         guard let ret = verify(at: .top, from: view.lyt.top, extra: offset) else { return self }
-        return offsetBy(ret.anchor, for: .top, extra: ret.extra)
-    }
-    
-    /// 【以传入视图的视图顶部为起始点设置当前对象的边距值 上边距，默认 0 】
-    @discardableResult
-    func top(by view: AppView, offset: CGFloat = .zero) -> Self {
-        guard let ret = verify(at: .top, from: view.lyt.top, extra: .eq(offset)) else { return self }
         return offsetBy(ret.anchor, for: .top, extra: ret.extra)
     }
     
@@ -83,16 +55,8 @@ public extension AutoLayoutViewDSL {
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func topSafe(by anchor: AppViewYaxisAnchor?, offset: AutoLayoutExtraValue) -> Self {
+    func topSafe(by anchor: AppViewYaxisAnchor?, offset: AutoLayoutExtraValue = .eq(.offset)) -> Self {
         guard let ret = verify(at: .top, from: anchor, extra: offset, inSafe: true) else { return self }
-        return offsetBy(ret.anchor, for: .top, extra: ret.extra)
-    }
-    
-    /// 【上安全边距，默认 10 】
-    @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func topSafe(by anchor: AppViewYaxisAnchor?, offset: CGFloat = .offset) -> Self {
-        guard let ret = verify(at: .top, from: anchor, extra: .eq(offset), inSafe: true) else { return self }
         return offsetBy(ret.anchor, for: .top, extra: ret.extra)
     }
     
@@ -100,20 +64,12 @@ public extension AutoLayoutViewDSL {
     /// 若需要动态修改，将 offset 值设置为 .max/.min
     @discardableResult
     @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func topSafe(by view: AppView, offset: AutoLayoutExtraValue) -> Self {
+    func topSafe(by view: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
         guard let ret = verify(at: .top, from: view.lyt.topSafe, extra: offset, inSafe: true) else { return self }
         return offsetBy(ret.anchor, for: .top, extra: ret.extra)
     }
     
-    /// 【上安全边距，默认 0 】
-    @discardableResult
-    @available(iOS 11.0, macOS 11.0, tvOS 11.0, *)
-    func topSafe(by view: AppView, offset: CGFloat = .zero) -> Self {
-        guard let ret = verify(at: .top, from: view.lyt.topSafe, extra: .eq(offset), inSafe: true) else { return self }
-        return offsetBy(ret.anchor, for: .top, extra: ret.extra)
-    }
-    
-    /// 【上中边距，默认 0 】
+    /// 【上中边距 】
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
@@ -132,7 +88,7 @@ public extension AutoLayoutViewDSL {
     /// 若需要 offset 动态变化，将 offset 值设置为 .max/.min
     /// 若需要设置视图是否可以压缩显示，可以调用 priority() / compress()方法进行设置
     @discardableResult
-    func topCenterX(by top: AppView, offset: AutoLayoutExtraValue = .eq(.zero)) -> Self {
+    func topCenterX(by top: AppView, offset: AutoLayoutExtraValue = nil) -> Self {
         return self.top(by: top, offset: offset)
             .centerX(by: top)
     }
