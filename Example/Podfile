@@ -2,10 +2,10 @@ use_frameworks!
 
 platform :ios, '10.0'
 
-target 'AutoLayoutLink_Example' do
-  pod 'AutoLayoutLink', :path => '../'
+target 'SnapLink_Example' do
+  pod 'SnapLink', :path => '../'
 
-  target 'AutoLayoutLink_Tests' do
+  target 'SnapLink_Tests' do
     inherit! :search_paths
 
     

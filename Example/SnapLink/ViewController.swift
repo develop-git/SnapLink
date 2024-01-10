@@ -1,15 +1,19 @@
-## Example
+//
+//  ViewController.swift
+//  SnapLink
+//
+//  Created by FullStack-Jian on 11/08/2023.
+//  Copyright (c) 2023 FullStack-Jian. All rights reserved.
+//
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
-```ruby
+import UIKit
 import SnapLink
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        // Do any additional setup after loading the view, typically from a nib.
         
         let temp = UIView()
         temp.backgroundColor = .cyan
@@ -26,7 +30,7 @@ class ViewController: UIViewController {
             // 安全区域基础上再偏移10
             .safeTop(10)
             // 压缩视图
-            .compress()
+            .compress(true)
             .bottom(.max(10))
         
         lab2.snapIn(temp)
@@ -44,30 +48,11 @@ class ViewController: UIViewController {
         lab.backgroundColor = .orange
         return lab
     }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+        
+    }
 }
-```
 
-## Requirements
-```ruby
-iOS 10.0、 tvOS 10.0、macOS 10.12
-Swift 5.0
-```
-
-## Installation
-
-SnapLink is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
-```ruby
-
-pod 'SnapLink', '~> 1.0.0'
-
-```
-
-## Author
-
-  jianli, develop-work@outlook.com
-
-## License
-
-SnapLink is available under the MIT license. See the LICENSE file for more info.
